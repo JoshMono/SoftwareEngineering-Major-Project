@@ -1,0 +1,92 @@
+/*      */
+/* BODY */
+/*      */
+
+.BodyDiv {
+    margin: 0%;
+    padding: 0%;
+    font-family: Consolas, monospace;
+    
+    background-color: rgb(224, 224, 224);
+    color: rgb(0, 0, 0);
+    
+}
+
+
+
+
+
+
+
+/*            */
+/* NAVIGATION */
+/*            */
+
+.active {
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}
+
+.NavBarDiv {
+    background: rgb(36, 36, 36);
+    
+}
+
+.navbar-nav .nav-link {
+    font-size: 18px;  
+    margin-right: 20px;
+    transition: 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:not(.disabled) {
+    color: rgb(245, 245, 245);
+}
+
+.navbar-nav .nav-link:hover {
+    
+    color: #a8a8a8;
+}
+
+.NavBarUlDiv {
+    margin-left: 5px; 
+    
+}
+
+.NavBarIcons a {
+    color: white; 
+    transition: 0.3s ease-in-out;
+}
+
+.NavBarIcons a:hover {
+    color: #a8a8a8; 
+}
+
+
+
+
+
+
+
+/*        */
+/* Footer */
+/*        */
+
+.FooterDiv {
+    background-color: rgb(36, 36, 36);
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    border-top: 1px solid rgb(245, 245, 245);
+    margin-top: 100px;
+}
+
+
+
+.TableFormat {
+    border: 1px black solid;
+
+}
+
+.TableItems {
+    height: 600px;
+}

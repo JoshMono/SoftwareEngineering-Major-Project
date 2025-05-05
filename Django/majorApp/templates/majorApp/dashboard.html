@@ -1,0 +1,131 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+
+
+
+<div class="container" style="max-width: 90%;">
+    <div class="row align-items-center">
+          
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+               
+                <tbody>
+                    <tr>
+                        <td>
+                            <h2>Leads</h2>
+                        </td>
+                    </tr>
+                    {% for lead in leads %}
+                    <tr>
+                        <td>
+                            {{lead}}<span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
+                        </td>
+                    </tr>    
+                    {% endfor %}
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Lead</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+               
+                <tbody>
+                    <tr>
+                        <td>
+                            <h2>Quotes</h2>
+                        </td>
+                    </tr>
+                    {% for quote in quotes %}
+                    <tr>
+                        <td>
+                            {{quote}}<span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
+                        </td>
+                    </tr>    
+                    {% endfor %}
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Quote</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+               
+                <tbody>
+                    <tr>
+                        <td>
+                            <h2>Invoices</h2>
+                        </td>
+                    </tr>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td>
+                            {{invoice}}<span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
+                        </td>
+                    </tr>    
+                    {% endfor %}
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Invoice</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+               
+                <tbody>
+                    <tr>
+                        <td>
+                            <h2>Companies</h2>
+                        </td>
+                    </tr>
+                    {% for company in companies %}
+                    <tr>
+                        <td>
+                            {{company.name}}<span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
+                        </td>
+                    </tr>    
+                    {% endfor %}
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Company</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+        
+        
+    
+    </div>   
+
+</div>
+
+{% endblock %}
+
