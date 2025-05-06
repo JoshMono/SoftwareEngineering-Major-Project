@@ -9,10 +9,12 @@ from django.db.models import Q
 def dashboard(request):
     context = {}
 
-    companies = Company.objects.all()
-    leads = Lead.objects.all()
-    quotes = Quote.objects.filter(Q(status="S") | Q(status="D"))
-    invoices = Invoice.objects.filter(status="D")
+    user = request.user
+    firm_id = user.firm.id
+    companies = Company.objects.filter(firm=user.firm)
+    leads = Lead.objects.filter(Q(company__firm__id=firm_id) & (Q(status="IC") | Q(status="QS")))
+    quotes = Quote.objects.filter(Q(company__firm__id=firm_id) & (Q(status="D") | Q(status="S")))
+    invoices = Invoice.objects.filter(Q(company__firm__id=firm_id) & (Q(status="D") | Q(status="S")))
 
     context['companies'] = companies
     context['leads'] = leads

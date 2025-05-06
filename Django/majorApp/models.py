@@ -119,6 +119,8 @@ class QuoteItem(models.Model):
 class InvoiceStatusChoices(models.TextChoices):
     DRAFT = "D", _("Draft")
     SENT = "S", _("Sent")
+    WON = "W", _("Won")
+    LOST = "L", _("Lost")
 
 class Invoice(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
