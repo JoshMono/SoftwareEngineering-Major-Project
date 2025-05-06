@@ -11,7 +11,7 @@ def dashboard(request):
     companies = Company.objects.all()
     leads = Lead.objects.all()
     quotes = Quote.objects.all()
-    invoices = Invoice.objects.all()
+    invoices = Invoice.objects.filter(status="D")
 
     context['companies'] = companies
     context['leads'] = leads

@@ -135,8 +135,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_UNKNOWN_ACCOUNTS = False
 MAX_EMAIL_ADDRESSES = 1
 
-LOGIN_REDIRECT_URL = 'index'  # todo
-ACCOUNT_SIGNUP_REDIRECT_URL = 'index'  # todo
+LOGIN_REDIRECT_URL = 'dashboard'  # todo
+ACCOUNT_SIGNUP_REDIRECT_URL = 'dashboard'  # todo
 
 
 # Internationalization

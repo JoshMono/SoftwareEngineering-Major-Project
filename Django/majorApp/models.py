@@ -28,9 +28,9 @@ class Firm(models.Model):
 class Company(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.TextField()
-    address = models.TextField()
+    address = models.TextField(null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)
-    contacts = models.ManyToManyField("majorApp.Contact")
+    contacts = models.ManyToManyField("majorApp.Contact", null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -63,7 +63,7 @@ class LeadStatusChoices(models.TextChoices):
 class Lead(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    contacts = models.ManyToManyField(Contact)
+    contacts = models.ManyToManyField(Contact, null=True, blank=True)
     status = models.CharField(choices=LeadStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
     estimated_value = models.DecimalField(decimal_places=2, max_digits=12)
@@ -88,10 +88,10 @@ class Quote(models.Model):
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True, help_text="Optional to Link to a Lead")
     status = models.CharField(choices=QuoteStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
-    contacts = models.ManyToManyField(Contact)
+    contacts = models.ManyToManyField(Contact, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.company} - {self.notes}"
+        return f"{self.company} - ${self.get_total_price()}"
 
     def get_firm(self):
         return self.company.firm
@@ -115,6 +115,7 @@ class QuoteItem(models.Model):
     def get_firm(self):
         return self.quote.company.firm
     
+   
 class InvoiceStatusChoices(models.TextChoices):
     DRAFT = "D", _("Draft")
     SENT = "S", _("Sent")
@@ -126,10 +127,10 @@ class Invoice(models.Model):
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE, null=True, blank=True, help_text="Optional to Link to a Quote")
     status = models.CharField(choices=InvoiceStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
-    contacts = models.ManyToManyField(Contact)
+    contacts = models.ManyToManyField(Contact, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.company} - {self.get_total_price()}"
+        return f"{self.company} - ${self.get_total_price()}"
 
     def get_firm(self):
         return self.company.firm

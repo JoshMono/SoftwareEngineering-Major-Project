@@ -7,6 +7,11 @@
 {% block content %}
 
 
+<div class="HeaderDiv">
+
+    <h1>Dashbaord</h1>
+
+</div>
 
 
 <div class="container" style="max-width: 90%;">
@@ -14,17 +19,24 @@
           
         <div class="col-md-3 mb-3 ">
             <table class="table w-100 TableItems">
-               
-                <tbody>
+                <thead>
+
                     <tr>
-                        <td>
+                        <td class="TableLabel">
                             <h2>Leads</h2>
                         </td>
                     </tr>
-                    {% for lead in leads %}
-                    <tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
                         <td>
-                            {{lead}}<span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
+                            <h2>Active Leads</h2>
+                        </td>
+                    </tr>
+                    {% for lead in leads %}
+                    <tr class="btn-group flex-wrap">
+                        <td>
+                            <p>{{lead}}</p><span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
                         </td>
                     </tr>    
                     {% endfor %}
@@ -41,11 +53,18 @@
         </div>
         <div class="col-md-3 mb-3 ">
             <table class="table w-100 TableItems">
-               
-                <tbody>
+                <thead>
+
                     <tr>
-                        <td>
+                        <td class="TableLabel">
                             <h2>Quotes</h2>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
+                        <td>
+                            <h2>Active Quotes</h2>
                         </td>
                     </tr>
                     {% for quote in quotes %}
@@ -68,11 +87,17 @@
         </div>
         <div class="col-md-3 mb-3 ">
             <table class="table w-100 TableItems">
-               
-                <tbody>
+               <thead>
                     <tr>
-                        <td>
+                        <td class="TableLabel">
                             <h2>Invoices</h2>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
+                        <td>
+                            <h2>Active Invoices</h2>
                         </td>
                     </tr>
                     {% for invoice in invoices %}
@@ -95,20 +120,32 @@
         </div>
         <div class="col-md-3 mb-3 ">
             <table class="table w-100 TableItems">
-               
-                <tbody>
+                <thead>
                     <tr>
-                        <td>
+                        <td class="TableLabel">
                             <h2>Companies</h2>
                         </td>
                     </tr>
-                    {% for company in companies %}
-                    <tr>
+
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
                         <td>
-                            {{company.name}}<span style="float: right;"><a href="" class="btn btn-sm btn-warning">Details</a></span>
+                            <h2>Active Companies</h2>
+                        </td>
+                    </tr>
+                    <tr class="Items">
+                        <td >
+                            <ul>
+                                {% for company in companies %}
+                                    <li style="margin-bottom: 10px;">
+                                        {{company.name}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                    </li>
+                                    
+                                {% endfor %}
+                            </ul> 
                         </td>
                     </tr>    
-                    {% endfor %}
                     
                 </tbody>
                 <tfoot>
