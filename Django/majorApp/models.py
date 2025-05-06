@@ -70,7 +70,7 @@ class Lead(models.Model):
     last_contact_date = models.DateField(default=datetime.date.today(), null=True, blank=True)
 
     def __str__(self):
-        return f"{self.company} - {self.estimated_value}"
+        return f"{self.company} - ${self.estimated_value}"
     
     def get_firm(self):
         return self.company.firm
