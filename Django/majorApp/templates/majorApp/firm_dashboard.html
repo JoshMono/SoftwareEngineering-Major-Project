@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block title %}Home{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
@@ -22,6 +22,8 @@
     </form>
 </div>
 
+
+<h1>Firm: {{firm}}</h1>
 
 <div class="container" style="max-width: 90%;">
     <div class="row align-items-center">
@@ -163,7 +165,7 @@
                             <ul>
                                 {% for company in companies %}
                                     <li style="margin-bottom: 10px;">
-                                        {{company.name}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_dashboard' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}

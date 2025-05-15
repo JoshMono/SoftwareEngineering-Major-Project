@@ -1,0 +1,173 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h1>Company: {{company}}</h1>
+
+<div class="container" style="max-width: 90%;">
+    <div class="row align-items-center">
+          
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+                <thead>
+
+                    <tr>
+                        <td class="TableLabel">
+                            <h2>Leads</h2>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
+                        <td>
+                            <h2>Active Leads</h2>
+                        </td>
+                    </tr>
+                    <tr class="Items">
+                        <td >
+                            <ul>
+                                {% for lead in leads %}
+                                    <li style="margin-bottom: 10px;">
+                                        {{lead}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                    </li>
+                                    
+                                {% endfor %}
+                            </ul> 
+                        </td>
+                    </tr>
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Lead</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+                <thead>
+
+                    <tr>
+                        <td class="TableLabel">
+                            <h2>Quotes</h2>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
+                        <td>
+                            <h2>Active Quotes</h2>
+                        </td>
+                    </tr>
+                    <tr class="Items">
+                        <td >
+                            <ul>
+                                {% for quote in quotes %}
+                                    <li style="margin-bottom: 10px;">
+                                        {{quote}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                    </li>
+                                    
+                                {% endfor %}
+                            </ul> 
+                        </td>
+                    </tr>
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Quote</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+               <thead>
+                    <tr>
+                        <td class="TableLabel">
+                            <h2>Invoices</h2>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
+                        <td>
+                            <h2>Active Invoices</h2>
+                        </td>
+                    </tr>
+                    <tr class="Items">
+                        <td >
+                            <ul>
+                                {% for invoice in invoices %}
+                                    <li style="margin-bottom: 10px;">
+                                        {{invoice}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                    </li>
+                                    
+                                {% endfor %}
+                            </ul> 
+                        </td>
+                    </tr>
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Invoice</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems">
+               <thead>
+                    <tr>
+                        <td class="TableLabel">
+                            <h2>Contacts</h2>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody class="TableBody">
+                    <tr class="TableLabelRow">
+                        <td>
+                            <h2>Contacts</h2>
+                        </td>
+                    </tr>
+                    <tr class="Items">
+                        <td >
+                            <ul>
+                                {% for contact in contacts %}
+                                    <li style="margin-bottom: 10px;">
+                                        {{contact}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                    </li>
+                                    
+                                {% endfor %}
+                            </ul> 
+                        </td>
+                    </tr>
+                    
+                </tbody>
+                <tfoot>
+                    <td>
+                        <a href="" class="btn btn-sm btn-primary">Add Contact</a>
+                    </td>
+                </tfoot>
+
+            </table>
+        
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
