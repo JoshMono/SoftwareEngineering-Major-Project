@@ -4,12 +4,17 @@ from . import views
 
 
 urlpatterns = [
-<<<<<<< Updated upstream
-    path('', views.firm_dashboard, name='firm_dashboard'),
-    path('firm_dashboard', views.firm_dashboard, name='firm_dashboard'),
-    path('company_dashboard/<company_id>', views.company_dashboard, name='company_dashboard'),
-    path('test_page/', views.test_page, name='test_page'),
->>>>>>> Stashed changes
+    path('', views.firm_dashboard, name='dashboard'),
+    path('dashboard', views.firm_dashboard, name='dashboard'),
+    path('company/<company_id>', views.company_detail, name='company_detail'),
     path('create_firm/', views.create_firm, name='create_firm'),
-
+    path('leads/', views.leads, name='leads'),
+    path('lead_create/', views.lead_create, name='lead_create'),
+    path('lead_edit/<lead_id>', views.lead_edit, name='lead_edit'),
+    path('lead_delete/<lead_id>', views.lead_delete, name='lead_delete'),
+    path('lead_detail/<lead_id>', views.lead_detail, name='lead_detail'),
+    path('quotes/', views.quotes, name='quotes'),
+    path('invoices/', views.invoices, name='invoices'),
+    path('companies/', views.companies, name='companies'),
+    path('contacts/', views.contacts, name='contacts'),
 ]

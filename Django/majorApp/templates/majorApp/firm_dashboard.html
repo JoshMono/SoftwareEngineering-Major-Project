@@ -49,7 +49,7 @@
                             <ul>
                                 {% for lead in leads %}
                                     <li style="margin-bottom: 10px;">
-                                        {{lead}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{lead}}<span style="float: right;"><a  href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -60,7 +60,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Add Lead</a>
+                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-primary">Add Lead</a>
                     </td>
                 </tfoot>
 
@@ -165,7 +165,7 @@
                             <ul>
                                 {% for company in companies %}
                                     <li style="margin-bottom: 10px;">
-                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_dashboard' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_detail' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}

@@ -1,0 +1,54 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Quotes{% endblock %}
+
+{% block content %}
+
+<h1>Quotes</h1>
+
+<div class="container" style="max-width: 90%;">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Company    
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Notes
+                </th>
+                <th>
+                    Contacts
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        {% for quote in quotes %}
+            <tr>
+                <td>
+                    {{quote.company}}    
+                </td>
+                <td>
+                    {{quote.status}}
+                </td>
+                <td>
+                    {{quote.notes}}
+                </td>
+                <td>
+                    {{quote.get_contacts_string}}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary">View</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}

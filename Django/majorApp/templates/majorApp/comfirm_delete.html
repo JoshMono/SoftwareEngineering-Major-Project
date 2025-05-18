@@ -1,0 +1,13 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="margin-top: 50px">
+        <h1 >Are you sure you want to delete {{object}}?</h1>
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Confirm</button>
+            <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

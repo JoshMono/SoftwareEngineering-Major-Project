@@ -25,7 +25,22 @@
             <div class="NavBarUlDiv" >
               <ul class="navbar-nav d-flex flex-row flex-wrap">
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'firm_dashboard' %}">Dashboard</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'leads' %}">Leads</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'quotes' %}">Quotes</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'invoices' %}">Invoices</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'companies' %}">Companies</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'contacts' %}">Contacts</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'test_page' %}">Dashboard</a>
@@ -45,12 +60,12 @@
           </div>
         </nav>
       </header>
-        <div >
+        
             <!-- Main content -->
             {% block content %}
             
             {% endblock %}
-        </div>
+        
 
 
         <footer>
@@ -63,7 +78,7 @@
 
         </footer>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-        <script src="{% static 'majorApp/js/bootstrap.min.js' %}"></script>
+        
         
     </body>
 </html>
