@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models import Q
 import uuid
 import datetime
+from .utils import concatonate_list_of_strings_with_ampersand
 
 
 class CustomUser(AbstractUser):
@@ -41,20 +42,7 @@ class Company(models.Model):
     
     def get_contacts_string(self):
         contacts = self.contacts.all()
-        if len(contacts) == 1:
-            contacts_string = contacts[0]
-            
-        else:
-            contacts_string = ""
-            for i, contact in enumerate(contacts):
-                if i + 2 == len(contacts):
-                    contacts_string += f"{contact} & "
-                elif i + 1 == len(contacts):
-                    contacts_string += f"{contact}"
-                else:
-                    contacts_string += f"{contact}, "
 
-        return contacts_string
     
     def get_open_leads_count(self):
         open_leads_count = Lead.objects.filter(Q(company_id=self.id) & (Q(status="NC") | Q(status="IC") | Q(status="QS"))).count()
@@ -81,6 +69,10 @@ class Contact(models.Model):
     
     def get_firm(self):
         return self.firm
+    
+    def get_companies(self):
+        companies = self.company_set.all()
+        return concatonate_list_of_strings_with_ampersand(companies)
     
     
 
@@ -109,20 +101,7 @@ class Lead(models.Model):
 
     def get_contacts_string(self):
         contacts = self.contacts.all()
-        if len(contacts) == 1:
-            contacts_string = contacts[0]
-            
-        else:
-            contacts_string = ""
-            for i, contact in enumerate(contacts):
-                if i + 2 == len(contacts):
-                    contacts_string += f"{contact} & "
-                elif i + 1 == len(contacts):
-                    contacts_string += f"{contact}"
-                else:
-                    contacts_string += f"{contact}, "
-
-        return contacts_string
+        return concatonate_list_of_strings_with_ampersand(contacts)
 
 class QuoteStatusChoices(models.TextChoices):
     DRAFT = "D", _("Draft")
@@ -153,20 +132,7 @@ class Quote(models.Model):
     
     def get_contacts_string(self):
         contacts = self.contacts.all()
-        if len(contacts) == 1:
-            contacts_string = contacts[0]
-            
-        else:
-            contacts_string = ""
-            for i, contact in enumerate(contacts):
-                if i + 2 == len(contacts):
-                    contacts_string += f"{contact} & "
-                elif i + 1 == len(contacts):
-                    contacts_string += f"{contact}"
-                else:
-                    contacts_string += f"{contact}, "
-
-        return contacts_string
+        return concatonate_list_of_strings_with_ampersand(contacts)
 
 class QuoteItem(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
@@ -211,20 +177,7 @@ class Invoice(models.Model):
     
     def get_contacts_string(self):
         contacts = self.contacts.all()
-        if len(contacts) == 1:
-            contacts_string = contacts[0]
-            
-        else:
-            contacts_string = ""
-            for i, contact in enumerate(contacts):
-                if i + 2 == len(contacts):
-                    contacts_string += f"{contact} & "
-                elif i + 1 == len(contacts):
-                    contacts_string += f"{contact}"
-                else:
-                    contacts_string += f"{contact}, "
-
-        return contacts_string
+        return concatonate_list_of_strings_with_ampersand(contacts)
 
     def get_amount_owing(self):
         

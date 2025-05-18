@@ -49,7 +49,7 @@
                     {{company.get_unpaid_invoices_count}}
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-primary">View</a>
+                    <a class="btn btn-sm btn-primary" href="{% url 'company_detail' company.id %}">View</a>
                 </td>
             </tr>
         {% endfor %}

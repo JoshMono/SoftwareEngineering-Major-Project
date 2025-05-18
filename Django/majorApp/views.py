@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Firm, Company, Lead, Quote, Invoice, Contact
-from .forms import CreateCompanyForm, CreateFirmForm
+from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm
 
 
 # Create your views here.
@@ -15,7 +15,7 @@ def firm_dashboard(request):
             company = form.save(commit=False)
             company.firm = request.user.firm
             company.save()
-            return redirect('/firm_dashboard')
+            return redirect('/dashboard')
     else:
         if request.user.firm == None:
             
@@ -64,7 +64,6 @@ def company_detail(request, company_id):
     company = Company.objects.get(id=company_id)
     firm = company.get_firm()
     
-    print(request.user.firm==firm)
     if firm != request.user.firm:
         return HttpResponseForbidden("Permission Denied")
     context = {}
@@ -73,7 +72,6 @@ def company_detail(request, company_id):
     leads = Lead.objects.filter(Q(company_id=company_id) & (Q(status="IC") | Q(status="QS")))
     quotes = Quote.objects.filter(Q(company_id=company_id) & (Q(status="D") | Q(status="S")))
     invoices = Invoice.objects.filter(Q(company_id=company_id) & (Q(status="D") | Q(status="S")))
-    print(dir(company))
     contacts = company.contacts.all()
     context['leads'] = leads
     context['quotes'] = quotes
@@ -143,3 +141,64 @@ def contacts(request):
     context['contacts'] = contacts
     
     return render(request, "majorApp/contacts.html", context)
+
+@login_required
+def lead_create(request):
+
+    firm_id = request.user.firm.id
+    if request.method == "POST":
+        form = CreateLeadForm(request.POST, firm_id=firm_id)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        form = CreateLeadForm(firm_id=firm_id)
+        
+    return render(request, "majorApp/lead_create.html", {"form": form, "create_edit": "Create"})
+
+
+@login_required
+def lead_edit(request, lead_id):
+    lead = Lead.objects.get(id=lead_id)
+    firm = lead.get_firm()
+    user_firm_id = request.user.firm.id
+    
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    if request.method == "POST":
+        form = CreateLeadForm(request.POST, instance=lead, firm_id=user_firm_id)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        form = CreateLeadForm(instance=lead, firm_id=user_firm_id)
+        
+    return render(request, "majorApp/lead_create.html", {"form": form, "create_edit": "Edit"})
+
+@login_required
+def lead_delete(request, lead_id):
+    lead = Lead.objects.get(id=lead_id)
+    firm = lead.get_firm()
+    user_firm_id = request.user.firm.id
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    
+    if request.method == "POST":
+        lead.delete()
+        return redirect('/dashboard')
+         
+    return render(request, "majorApp/comfirm_delete.html", {"object": lead})
+
+@login_required
+def lead_detail(request, lead_id):
+    lead = Lead.objects.get(id=lead_id)
+    firm = lead.get_firm()
+    user_firm_id = request.user.firm.id
+    context = {}
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+
+    
+    context['lead'] = lead
+    
+    return render(request, "majorApp/lead_detail.html", context)   
