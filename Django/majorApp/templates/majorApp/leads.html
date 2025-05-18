@@ -1,0 +1,66 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Leads{% endblock %}
+
+{% block content %}
+
+<h1>Leads</h1>
+
+<div class="container" style="max-width: 90%;">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Company    
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Notes
+                </th>
+                <th>
+                    Estimated Value
+                </th>
+                <th>
+                    Contacts
+                </th>
+                <th>
+                    Last Contacted
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        {% for lead in leads %}
+            <tr>
+                <td>
+                    {{lead.company}}    
+                </td>
+                <td>
+                    {{lead.status}}
+                </td>
+                <td>
+                    {{lead.notes}}
+                </td>
+                <td>
+                    ${{lead.estimated_value}}
+                </td>
+                <td>
+                    {{lead.get_contacts_string}}
+                </td>
+                <td>
+                    {{lead.last_contact_date}}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary">View</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}

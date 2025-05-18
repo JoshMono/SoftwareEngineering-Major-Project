@@ -165,7 +165,7 @@
                             <ul>
                                 {% for company in companies %}
                                     <li style="margin-bottom: 10px;">
-                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_dashboard' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_detail' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}

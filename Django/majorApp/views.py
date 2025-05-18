@@ -59,7 +59,7 @@ def create_firm(request):
 
 
 @login_required
-def company_dashboard(request, company_id):
+def company_detail(request, company_id):
 
     company = Company.objects.get(id=company_id)
     firm = company.get_firm()
@@ -81,4 +81,65 @@ def company_dashboard(request, company_id):
     context['contacts'] = contacts
 
     # context["form"] = CreateFirmForm()
-    return render(request, "majorApp/company_dashboard.html", context)
+    return render(request, "majorApp/company_detail.html", context)
+
+@login_required
+def leads(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    leads = Lead.objects.filter(company__firm__id=firm_id)
+    
+    context['leads'] = leads
+    
+    return render(request, "majorApp/leads.html", context)
+
+@login_required
+def quotes(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    quotes = Quote.objects.filter(company__firm__id=firm_id)
+    
+    context['quotes'] = quotes
+    
+    return render(request, "majorApp/quotes.html", context)
+
+@login_required
+def invoices(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    invoices = Invoice.objects.filter(company__firm__id=firm_id)
+    
+    context['invoices'] = invoices
+    
+    return render(request, "majorApp/invoices.html", context)
+
+@login_required
+def companies(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    companies = Company.objects.filter(firm__id=firm_id)
+    
+    context['companies'] = companies
+    
+    return render(request, "majorApp/companies.html", context)
+
+
+@login_required
+def contacts(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    contacts = Contact.objects.filter(firm__id=firm_id)
+    
+    context['contacts'] = contacts
+    
+    return render(request, "majorApp/contacts.html", context)

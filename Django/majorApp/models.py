@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
 import uuid
 import datetime
 
@@ -37,6 +38,35 @@ class Company(models.Model):
     
     def get_firm(self):
         return self.firm
+    
+    def get_contacts_string(self):
+        contacts = self.contacts.all()
+        if len(contacts) == 1:
+            contacts_string = contacts[0]
+            
+        else:
+            contacts_string = ""
+            for i, contact in enumerate(contacts):
+                if i + 2 == len(contacts):
+                    contacts_string += f"{contact} & "
+                elif i + 1 == len(contacts):
+                    contacts_string += f"{contact}"
+                else:
+                    contacts_string += f"{contact}, "
+
+        return contacts_string
+    
+    def get_open_leads_count(self):
+        open_leads_count = Lead.objects.filter(Q(company_id=self.id) & (Q(status="NC") | Q(status="IC") | Q(status="QS"))).count()
+        return open_leads_count
+
+    def get_unpaid_invoices_count(self):
+        invoices = self.invoice_set.all()
+        unpaid_invoices_count = 0
+        for invoice in invoices:
+            if invoice.get_amount_owing() > 0:
+                unpaid_invoices_count += 1
+        return unpaid_invoices_count
 
 class Contact(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
@@ -51,6 +81,8 @@ class Contact(models.Model):
     
     def get_firm(self):
         return self.firm
+    
+    
 
 
 class LeadStatusChoices(models.TextChoices):
@@ -75,6 +107,22 @@ class Lead(models.Model):
     def get_firm(self):
         return self.company.firm
 
+    def get_contacts_string(self):
+        contacts = self.contacts.all()
+        if len(contacts) == 1:
+            contacts_string = contacts[0]
+            
+        else:
+            contacts_string = ""
+            for i, contact in enumerate(contacts):
+                if i + 2 == len(contacts):
+                    contacts_string += f"{contact} & "
+                elif i + 1 == len(contacts):
+                    contacts_string += f"{contact}"
+                else:
+                    contacts_string += f"{contact}, "
+
+        return contacts_string
 
 class QuoteStatusChoices(models.TextChoices):
     DRAFT = "D", _("Draft")
@@ -102,6 +150,23 @@ class Quote(models.Model):
         for item in quote_items:
             price += item.price
         return price
+    
+    def get_contacts_string(self):
+        contacts = self.contacts.all()
+        if len(contacts) == 1:
+            contacts_string = contacts[0]
+            
+        else:
+            contacts_string = ""
+            for i, contact in enumerate(contacts):
+                if i + 2 == len(contacts):
+                    contacts_string += f"{contact} & "
+                elif i + 1 == len(contacts):
+                    contacts_string += f"{contact}"
+                else:
+                    contacts_string += f"{contact}, "
+
+        return contacts_string
 
 class QuoteItem(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
@@ -143,6 +208,29 @@ class Invoice(models.Model):
         for item in invoice_items:
             price += item.price
         return price
+    
+    def get_contacts_string(self):
+        contacts = self.contacts.all()
+        if len(contacts) == 1:
+            contacts_string = contacts[0]
+            
+        else:
+            contacts_string = ""
+            for i, contact in enumerate(contacts):
+                if i + 2 == len(contacts):
+                    contacts_string += f"{contact} & "
+                elif i + 1 == len(contacts):
+                    contacts_string += f"{contact}"
+                else:
+                    contacts_string += f"{contact}, "
+
+        return contacts_string
+
+    def get_amount_owing(self):
+        
+        # todo
+
+        return 999
 
 class InvoiceItem(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)

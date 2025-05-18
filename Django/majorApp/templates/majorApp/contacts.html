@@ -1,0 +1,54 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Contacts{% endblock %}
+
+{% block content %}
+
+<h1>Contacts</h1>
+
+<div class="container" style="max-width: 90%;">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    First Name    
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Phone Number
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        {% for contact in contacts %}
+            <tr>
+                <td>
+                    {{contact.first_name}}    
+                </td>
+                <td>
+                    {{contact.last_name}}
+                </td>
+                <td>
+                    {{contact.email}}
+                </td>
+                <td>
+                    {{contact.phone_number}}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary">View</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}
