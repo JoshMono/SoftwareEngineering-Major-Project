@@ -6,7 +6,13 @@ from .models import Firm, Company, Lead, Quote, Invoice, Contact
 from .forms import CreateCompanyForm, CreateFirmForm
 from .logic import file_management
 
-from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm
+from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm
+from allauth.account.views import SignupView
+
+
+class CustomSignupView(SignupView):
+    form_class = CustomUserSignupForm
+    template_name = "accounts/signup.html"
 
 
 
@@ -55,7 +61,7 @@ def create_firm(request):
             firm_instance = form.save()
             request.user.firm = firm_instance
             request.user.save()
-            return redirect(f'/firm_dashboard')
+            return redirect(f'/dashboard')
         context["form"] = form
         return render(request, "majorApp/create_firm.html", context)
     else:
