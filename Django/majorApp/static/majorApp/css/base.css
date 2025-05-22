@@ -125,3 +125,9 @@
     list-style: none;
     margin-left: 0px;
 }
+
+.scroll-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+}

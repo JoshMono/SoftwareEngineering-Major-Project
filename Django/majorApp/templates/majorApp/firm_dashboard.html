@@ -16,10 +16,10 @@
 
 <h1>Firm: {{firm}}</h1>
 
-<div class="container" style="max-width: 90%;">
-    <div class="row align-items-center">
+<div class="container-fluid">
+    <div class="row align-items-center ">
           
-        <div class="col-md-3 mb-3 ">
+        <div class="col-md-3 mb-3 table-responsive">
             <table class="table w-100 TableItems">
                 <thead>
 
@@ -35,16 +35,18 @@
                             <h2>Active Leads</h2>
                         </td>
                     </tr>
-                    <tr class="Items">
+                    <tr class="Items ">
                         <td >
-                            <ul>
-                                {% for lead in leads %}
-                                    <li style="margin-bottom: 10px;">
-                                        {{lead}}<span style="float: right;"><a  href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a></span>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container" >
+                                <ul>
+                                    {% for lead in leads %}
+                                        <li style="margin-bottom: 10px;">
+                                            {{lead}}<a  href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     
