@@ -1,0 +1,44 @@
+
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link href="{% static 'majorApp/css/bootstrap.min.css' %}" rel="stylesheet">
+        
+        <link href="{% static 'majorApp/css/base.css' %}" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="{% static 'majorApp/images/TestFavicon.png' %}">
+        
+    </head>
+    <body class="BodyDiv">
+        
+      
+
+        
+            <!-- Main content -->
+            {% block content %}
+            
+            {% endblock %}
+        
+
+
+        <footer>
+
+          <div class="container-fluid FooterDiv">
+
+              <p>© 2025 Josh Monaghan - All Rights Reserved</p>
+              
+          </div>
+
+        </footer>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        
+        
+    </body>
+</html>

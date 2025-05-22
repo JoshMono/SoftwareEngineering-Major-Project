@@ -3,7 +3,17 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Firm, Company, Lead, Quote, Invoice, Contact
-from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm
+from .forms import CreateCompanyForm, CreateFirmForm
+from .logic import file_management
+
+from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm
+from allauth.account.views import SignupView
+
+
+class CustomSignupView(SignupView):
+    form_class = CustomUserSignupForm
+    template_name = "accounts/signup.html"
+
 
 
 # Create your views here.
@@ -18,11 +28,10 @@ def firm_dashboard(request):
             return redirect('/dashboard')
     else:
         if request.user.firm == None:
-            
             return redirect("/create_firm")
         
         firm_id = request.user.firm.id
-        
+
         context = {}
 
         firm = Firm.objects.get(id=firm_id)
@@ -41,6 +50,8 @@ def firm_dashboard(request):
 
         return render(request, "majorApp/firm_dashboard.html", context)
     
+
+    
 @login_required
 def create_firm(request):
     context = {}
@@ -50,7 +61,7 @@ def create_firm(request):
             firm_instance = form.save()
             request.user.firm = firm_instance
             request.user.save()
-            return redirect(f'/firm_dashboard')
+            return redirect(f'/dashboard')
         context["form"] = form
         return render(request, "majorApp/create_firm.html", context)
     else:
@@ -79,7 +90,49 @@ def company_detail(request, company_id):
     context['contacts'] = contacts
 
     # context["form"] = CreateFirmForm()
+
     return render(request, "majorApp/company_detail.html", context)
+
+def test_page(request):
+    files = file_management.list_txt_files()  # Always populate the dropdown list
+
+    if request.method == "POST":
+        if request.POST.get("action") == "create":
+            folder = request.POST.get("folder")
+            filename = request.POST.get("filename")
+            content = request.POST.get("content")
+
+            try:
+                file_management.create_file(folder, filename, content)
+                return render(request, "majorApp/test_page.html", {
+                    "success": True,
+                    "files": file_management.list_txt_files()
+                })
+            except Exception as e:
+                return render(request, "majorApp/test_page.html", {
+                    "error": str(e),
+                    "files": file_management.list_txt_files()
+                })
+
+    elif request.method == "GET":
+        if request.GET.get("action") == "search":
+            selected_file = request.GET.get("selected_file")
+            search_term = request.GET.get("file_search", "").strip()
+
+            if selected_file and search_term:
+                count = file_management.search_word_in_file(selected_file, search_term)
+                return render(request, "majorApp/test_page.html", {
+                    "files": files,
+                    "search_result": f"The word '{search_term}' appears {count} time(s) in '{selected_file}'."
+                })
+
+    return render(request, "majorApp/test_page.html", {
+        "files": files
+    })
+
+    
+
+
 
 @login_required
 def leads(request):
@@ -93,6 +146,7 @@ def leads(request):
     
     return render(request, "majorApp/leads.html", context)
 
+
 @login_required
 def quotes(request):
 
@@ -105,6 +159,7 @@ def quotes(request):
     
     return render(request, "majorApp/quotes.html", context)
 
+
 @login_required
 def invoices(request):
 
@@ -116,6 +171,7 @@ def invoices(request):
     context['invoices'] = invoices
     
     return render(request, "majorApp/invoices.html", context)
+
 
 @login_required
 def companies(request):

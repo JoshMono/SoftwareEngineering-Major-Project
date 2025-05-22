@@ -25,23 +25,24 @@
             <div class="NavBarUlDiv" >
               <ul class="navbar-nav d-flex flex-row flex-wrap">
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'leads' %}">Leads</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'leads' %}active{% endif %}" aria-current="page" href="{% url 'leads' %}">Leads</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'quotes' %}">Quotes</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'quotes' %}active{% endif %}" aria-current="page" href="{% url 'quotes' %}">Quotes</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'invoices' %}">Invoices</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'invoices' %}active{% endif %}" aria-current="page" href="{% url 'invoices' %}">Invoices</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'companies' %}">Companies</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'companies' %}active{% endif %}" aria-current="page" href="{% url 'companies' %}">Companies</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" aria-current="page" href="{% url 'contacts' %}">Contacts</a>
+                  <a class="nav-link {% if request.resolver_match.url_name == 'contacts' %}active{% endif %}" aria-current="page" href="{% url 'contacts' %}">Contacts</a>
                 </li>
+                
                 
               </ul>
             </div>

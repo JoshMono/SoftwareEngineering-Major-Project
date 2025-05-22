@@ -1,12 +1,13 @@
-
 from django.contrib import admin
 from django.urls import path
 from . import views
+from allauth.account.views import LoginView, SignupView
 
 
 urlpatterns = [
     path('', views.firm_dashboard, name='dashboard'),
-    path('dashboard/', views.firm_dashboard, name='dashboard'),
+    path("accounts/signup/", views.CustomSignupView.as_view(), name="account_signup"),
+    path('dashboard', views.firm_dashboard, name='dashboard'),
     path('company/<company_id>', views.company_detail, name='company_detail'),
     path('create_firm/', views.create_firm, name='create_firm'),
     path('leads/', views.leads, name='leads'),

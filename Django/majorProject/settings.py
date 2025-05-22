@@ -135,8 +135,12 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_UNKNOWN_ACCOUNTS = False
 MAX_EMAIL_ADDRESSES = 1
 
-LOGIN_REDIRECT_URL = 'firm_dashboard'  # todo
-ACCOUNT_SIGNUP_REDIRECT_URL = 'firm_dashboard'  # todo
+LOGIN_REDIRECT_URL = 'dashboard'  # todo
+ACCOUNT_SIGNUP_REDIRECT_URL = 'dashboard'  # todo
+
+
+ACCOUNT_LOGIN_METHODS = {"username", "email"}
+
 
 
 # Internationalization
