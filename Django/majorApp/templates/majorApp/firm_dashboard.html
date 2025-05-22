@@ -16,11 +16,12 @@
 
 <h1>Firm: {{firm}}</h1>
 
+
 <div class="container-fluid">
     <div class="row align-items-center ">
           
-        <div class="col-md-3 mb-3 table-responsive">
-            <table class="table w-100 TableItems">
+        <div class="col-md-3 mb-3 ">
+            <table class="table w-100 TableItems table-responsive" style="overflow-x: hidden; ">
                 <thead>
 
                     <tr>
@@ -36,13 +37,15 @@
                         </td>
                     </tr>
                     <tr class="Items ">
-                        <td >
-                            <div class="scroll-container" >
-                                <ul>
+                        <td>
+                            <div style="overflow-x: auto; white-space: nowrap; width: 95%; flex-grow: 1;"
+ >
+                                <ul style="display: inline-block;">
                                     {% for lead in leads %}
-                                        <li style="margin-bottom: 10px;">
-                                            {{lead}}<a  href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a>
+                                        <li style="margin-bottom: 10px; display: inline-block; width: 90%;">
+                                            {{lead}}<a style="display: inline-block; " href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a>
                                         </li>
+                                        <br>
                                         
                                     {% endfor %}
                                 </ul> 
@@ -60,7 +63,7 @@
             </table>
         
         </div>
-        <div class="col-md-3 mb-3 ">
+        <div class="col-md-3 mb-3 table-responsive">
             <table class="table w-100 TableItems">
                 <thead>
 
