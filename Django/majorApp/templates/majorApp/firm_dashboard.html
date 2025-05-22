@@ -88,7 +88,7 @@
                             <ul>
                                 {% for quote in quotes %}
                                     <li style="margin-bottom: 10px;">
-                                        {{quote}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{quote}}<span style="float: right;"><a  href="{% url 'quote_detail' quote.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -99,7 +99,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Add Quote</a>
+                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-primary">Add Quote</a>
                     </td>
                 </tfoot>
 

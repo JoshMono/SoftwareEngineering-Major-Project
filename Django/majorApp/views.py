@@ -202,3 +202,32 @@ def lead_detail(request, lead_id):
     context['lead'] = lead
     
     return render(request, "majorApp/lead_detail.html", context)   
+
+
+@login_required
+def lead_detail(request, lead_id):
+    lead = Lead.objects.get(id=lead_id)
+    firm = lead.get_firm()
+    user_firm_id = request.user.firm.id
+    context = {}
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+
+    
+    context['lead'] = lead
+    
+    return render(request, "majorApp/lead_detail.html", context)   
+
+
+def quote_detail(request, quote_id):
+    quote = Quote.objects.get(id=quote_id)
+    firm = quote.get_firm()
+    user_firm_id = request.user.firm.id
+    context = {}
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+
+    
+    context['quote'] = quote
+    
+    return render(request, "majorApp/quote_detail.html", context)   
