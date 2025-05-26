@@ -2,11 +2,11 @@
 {% load static %}
 
 
-{% block title %}Quote Details{% endblock %}
+{% block title %}Invoice Details{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1 style="margin-top: 50px; ">Quote</h1>
+    <h1 style="margin-top: 50px; ">Invoice</h1>
     <div  class="d-flex justify-content-center align-items-center" >
 
         <table class="table">
@@ -16,7 +16,7 @@
                         Company    
                     </td>
                     <td>
-                        {{quote.company}}    
+                        {{invoice.company}}    
                     </td>
                 </tr>
                 <tr>
@@ -24,7 +24,7 @@
                         Status
                     </td>
                     <td>
-                        {{quote.status}}
+                        {{invoice.status}}
                     </td>
                 </tr>
                 <tr>
@@ -32,7 +32,17 @@
                         Notes
                     </td>
                     <td>
-                        {{quote.notes}}
+                        {{invoice.notes}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Quote
+                    </td>
+                    <td>
+                        {% if quote_id %}
+                        <a href="{% url 'quote_detail' quote_id %}">{{invoice.quote}}</a>
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>
@@ -40,16 +50,9 @@
                         Contacts
                     </td>
                     <td>
-                        {{quote.get_contacts_string}}
+                        {{invoice.get_contacts_string}}
                     </td>
-                </tr>
-                <tr>
-                    <td>
-                        Last Contacted
-                    </td>
-                    <td>
-                        {{quote.last_contact_date}}
-                    </td>
+                    
                 </tr>
                 
             
@@ -58,8 +61,8 @@
 
         
     </div>
-    <a class="btn btn-danger" href="{% url 'lead_delete' quote.id %}">Delete</a>
-    <a class="btn btn-warning" href="{% url 'lead_edit' quote.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'invoice_delete' invoice.id %}">Delete</a>
+    <a class="btn btn-warning" href="{% url 'invoice_edit' invoice.id %}">Edit</a>
 </div>
 
 {% endblock %}

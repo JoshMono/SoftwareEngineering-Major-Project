@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Firm, Company, Lead, Quote, Invoice, Contact
-from .forms import CreateCompanyForm, CreateFirmForm
+from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm
 from .logic import file_management
 
 from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm
@@ -18,7 +18,7 @@ class CustomSignupView(SignupView):
 
 # Create your views here.
 @login_required
-def firm_dashboard(request):
+def dashboard(request):
     if request.method == 'POST':
         form = CreateCompanyForm(request.POST)
         if form.is_valid():
@@ -48,7 +48,7 @@ def firm_dashboard(request):
 
         context['form'] = CreateCompanyForm()
 
-        return render(request, "majorApp/firm_dashboard.html", context)
+        return render(request, "majorApp/firm/dashboard.html", context)
     
 
     
@@ -63,10 +63,10 @@ def create_firm(request):
             request.user.save()
             return redirect(f'/dashboard')
         context["form"] = form
-        return render(request, "majorApp/create_firm.html", context)
+        return render(request, "majorApp/firm/create_firm.html", context)
     else:
         context["form"] = CreateFirmForm()
-        return render(request, "majorApp/create_firm.html", context)
+        return render(request, "majorApp/firm/create_firm.html", context)
 
 
 @login_required
@@ -91,7 +91,7 @@ def company_detail(request, company_id):
 
     # context["form"] = CreateFirmForm()
 
-    return render(request, "majorApp/company_detail.html", context)
+    return render(request, "majorApp/company/company_detail.html", context)
 
 def test_page(request):
     files = file_management.list_txt_files()  # Always populate the dropdown list
@@ -134,43 +134,11 @@ def test_page(request):
 
 
 
-@login_required
-def leads(request):
-
-    firm_id = request.user.firm.id
-    context = {}
-
-    leads = Lead.objects.filter(company__firm__id=firm_id)
-    
-    context['leads'] = leads
-    
-    return render(request, "majorApp/leads.html", context)
 
 
-@login_required
-def quotes(request):
-
-    firm_id = request.user.firm.id
-    context = {}
-
-    quotes = Quote.objects.filter(company__firm__id=firm_id)
-    
-    context['quotes'] = quotes
-    
-    return render(request, "majorApp/quotes.html", context)
 
 
-@login_required
-def invoices(request):
 
-    firm_id = request.user.firm.id
-    context = {}
-
-    invoices = Invoice.objects.filter(company__firm__id=firm_id)
-    
-    context['invoices'] = invoices
-    
-    return render(request, "majorApp/invoices.html", context)
 
 
 @login_required
@@ -183,7 +151,7 @@ def companies(request):
     
     context['companies'] = companies
     
-    return render(request, "majorApp/companies.html", context)
+    return render(request, "majorApp/company/companies.html", context)
 
 
 @login_required
@@ -196,7 +164,41 @@ def contacts(request):
     
     context['contacts'] = contacts
     
-    return render(request, "majorApp/contacts.html", context)
+    return render(request, "majorApp/contact/contacts.html", context)
+
+
+
+###
+### Lead Views
+###
+
+
+
+@login_required
+def leads(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    leads = Lead.objects.filter(company__firm__id=firm_id)
+    
+    context['leads'] = leads
+    
+    return render(request, "majorApp/lead/leads.html", context)
+
+@login_required
+def lead_detail(request, lead_id):
+    lead = Lead.objects.get(id=lead_id)
+    firm = lead.get_firm()
+    user_firm_id = request.user.firm.id
+    context = {}
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+
+    
+    context['lead'] = lead
+    
+    return render(request, "majorApp/lead/lead_detail.html", context)   
 
 @login_required
 def lead_create(request):
@@ -210,7 +212,7 @@ def lead_create(request):
     else:     
         form = CreateLeadForm(firm_id=firm_id)
         
-    return render(request, "majorApp/lead_create.html", {"form": form, "create_edit": "Create"})
+    return render(request, "majorApp/lead/lead_create.html", {"form": form, "create_edit": "Create"})
 
 
 @login_required
@@ -229,7 +231,7 @@ def lead_edit(request, lead_id):
     else:     
         form = CreateLeadForm(instance=lead, firm_id=user_firm_id)
         
-    return render(request, "majorApp/lead_create.html", {"form": form, "create_edit": "Edit"})
+    return render(request, "majorApp/lead/lead_create.html", {"form": form, "create_edit": "Edit"})
 
 @login_required
 def lead_delete(request, lead_id):
@@ -243,37 +245,30 @@ def lead_delete(request, lead_id):
         lead.delete()
         return redirect('/dashboard')
          
-    return render(request, "majorApp/comfirm_delete.html", {"object": lead})
+    return render(request, "majorApp/general/comfirm_delete.html", {"object": lead})
+
+
+
+
+
+
+
+
+###
+### Quote Views
+###
 
 @login_required
-def lead_detail(request, lead_id):
-    lead = Lead.objects.get(id=lead_id)
-    firm = lead.get_firm()
-    user_firm_id = request.user.firm.id
+def quotes(request):
+
+    firm_id = request.user.firm.id
     context = {}
-    if firm.id != user_firm_id:
-        return HttpResponseForbidden("Permission Denied")
 
+    quotes = Quote.objects.filter(company__firm__id=firm_id)
     
-    context['lead'] = lead
+    context['quotes'] = quotes
     
-    return render(request, "majorApp/lead_detail.html", context)   
-
-
-@login_required
-def lead_detail(request, lead_id):
-    lead = Lead.objects.get(id=lead_id)
-    firm = lead.get_firm()
-    user_firm_id = request.user.firm.id
-    context = {}
-    if firm.id != user_firm_id:
-        return HttpResponseForbidden("Permission Denied")
-
-    
-    context['lead'] = lead
-    
-    return render(request, "majorApp/lead_detail.html", context)   
-
+    return render(request, "majorApp/quote/quotes.html", context)
 
 def quote_detail(request, quote_id):
     quote = Quote.objects.get(id=quote_id)
@@ -283,7 +278,143 @@ def quote_detail(request, quote_id):
     if firm.id != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
 
-    
+    if quote.lead:
+        context['lead_id'] = quote.lead.id
     context['quote'] = quote
     
-    return render(request, "majorApp/quote_detail.html", context)   
+    return render(request, "majorApp/quote/quote_detail.html", context)   
+
+@login_required
+def quote_create(request):
+
+    firm_id = request.user.firm.id
+    if request.method == "POST":
+        form = CreateQuoteForm(request.POST, firm_id=firm_id)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        company_id = request.GET.get("company_id")
+        form = CreateQuoteForm(firm_id=firm_id, company_id=company_id)
+        
+    return render(request, "majorApp/quote/quote_create.html", {"form": form, "create_edit": "Create"})
+
+
+@login_required
+def quote_edit(request, quote_id):
+    quote = Quote.objects.get(id=quote_id)
+    firm = quote.get_firm()
+    user_firm_id = request.user.firm.id
+    
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    if request.method == "POST":
+        form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
+        
+    return render(request, "majorApp/quote/quote_create.html", {"form": form, "create_edit": "Edit"})
+
+@login_required
+def quote_delete(request, quote_id):
+    quote = Quote.objects.get(id=quote_id)
+    firm = quote.get_firm()
+    user_firm_id = request.user.firm.id
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    
+    if request.method == "POST":
+        quote.delete()
+        return redirect('/dashboard')
+         
+    return render(request, "majorApp/general/comfirm_delete.html", {"object": quote})
+
+
+
+
+
+
+
+###
+### Invoice Views
+###
+
+@login_required
+def invoices(request):
+
+    firm_id = request.user.firm.id
+    context = {}
+
+    invoices = Invoice.objects.filter(company__firm__id=firm_id)
+    
+    context['invoices'] = invoices
+    
+    return render(request, "majorApp/invoice/invoices.html", context)
+
+
+def invoice_detail(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id)
+    firm = invoice.get_firm()
+    user_firm_id = request.user.firm.id
+    context = {}
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+
+    if invoice.quote:
+        context['quote_id'] = invoice.quote.id
+    context['invoice'] = invoice
+    
+    return render(request, "majorApp/invoice/invoice_detail.html", context)   
+
+@login_required
+def invoice_create(request):
+
+    firm_id = request.user.firm.id
+    if request.method == "POST":
+        form = CreateInvoiceForm(request.POST, firm_id=firm_id)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        company_id = request.GET.get("company_id")
+        form = CreateInvoiceForm(firm_id=firm_id, company_id=company_id)
+        
+    return render(request, "majorApp/invoice/invoice_create.html", {"form": form, "create_edit": "Create"})
+
+
+@login_required
+def invoice_edit(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id)
+    firm = invoice.get_firm()
+    user_firm_id = request.user.firm.id
+    
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    if request.method == "POST":
+        form = CreateInvoiceForm(request.POST, instance=invoice, firm_id=user_firm_id)
+        if form.is_valid():
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        form = CreateInvoiceForm(instance=invoice, firm_id=user_firm_id)
+        
+    return render(request, "majorApp/invoice/invoice_create.html", {"form": form, "create_edit": "Edit"})
+
+@login_required
+def invoice_delete(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id)
+    firm = invoice.get_firm()
+    user_firm_id = request.user.firm.id
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    
+    if request.method == "POST":
+        invoice.delete()
+        return redirect('/dashboard')
+         
+    return render(request, "majorApp/general/comfirm_delete.html", {"object": invoice})
+
+

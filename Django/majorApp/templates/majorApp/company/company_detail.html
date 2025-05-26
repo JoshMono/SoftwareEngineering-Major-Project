@@ -2,26 +2,17 @@
 {% load static %}
 
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
 
+<h1>Company: {{company}}</h1>
 
-<div class="HeaderDiv">
-
-    <h1>Dashbaord</h1>
-
-</div>
-
-
-<h1>Firm: {{firm}}</h1>
-
-
-<div class="container-fluid">
-    <div class="row align-items-center ">
+<div class="container" style="max-width: 90%;">
+    <div class="row align-items-center">
           
         <div class="col-md-3 mb-3 ">
-            <table class="table w-100 TableItems table-responsive" style="overflow-x: hidden; ">
+            <table class="table w-100 TableItems">
                 <thead>
 
                     <tr>
@@ -36,34 +27,30 @@
                             <h2>Active Leads</h2>
                         </td>
                     </tr>
-                    <tr class="Items ">
-                        <td>
-                            <div style="overflow-x: auto; white-space: nowrap; width: 95%; flex-grow: 1;"
- >
-                                <ul style="display: inline-block;">
-                                    {% for lead in leads %}
-                                        <li style="margin-bottom: 10px; display: inline-block; width: 90%;">
-                                            {{lead}}<a style="display: inline-block; " href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a>
-                                        </li>
-                                        <br>
-                                        
-                                    {% endfor %}
-                                </ul> 
-                            </div>
+                    <tr class="Items">
+                        <td >
+                            <ul>
+                                {% for lead in leads %}
+                                    <li style="margin-bottom: 10px;">
+                                        {{lead}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                    </li>
+                                    
+                                {% endfor %}
+                            </ul> 
                         </td>
                     </tr>
                     
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-primary">Add Lead</a>
+                        <a href="" class="btn btn-sm btn-primary">Add Lead</a>
                     </td>
                 </tfoot>
 
             </table>
         
         </div>
-        <div class="col-md-3 mb-3 table-responsive">
+        <div class="col-md-3 mb-3 ">
             <table class="table w-100 TableItems">
                 <thead>
 
@@ -84,7 +71,7 @@
                             <ul>
                                 {% for quote in quotes %}
                                     <li style="margin-bottom: 10px;">
-                                        {{quote}}<span style="float: right;"><a  href="{% url 'quote_detail' quote.id %}" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{quote}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -95,7 +82,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-primary">Add Quote</a>
+                        <a href="{% url 'quote_create' %}?company_id={{company.id}}" class="btn btn-sm btn-primary">Add Quote</a>
                     </td>
                 </tfoot>
 
@@ -140,54 +127,47 @@
             </table>
         
         </div>
+
         <div class="col-md-3 mb-3 ">
             <table class="table w-100 TableItems">
-                <thead>
+               <thead>
                     <tr>
                         <td class="TableLabel">
-                            <h2>Companies</h2>
+                            <h2>Contacts</h2>
                         </td>
                     </tr>
-
                 </thead>
                 <tbody class="TableBody">
                     <tr class="TableLabelRow">
                         <td>
-                            <h2>Active Companies</h2>
+                            <h2>Contacts</h2>
                         </td>
                     </tr>
                     <tr class="Items">
                         <td >
                             <ul>
-                                {% for company in companies %}
+                                {% for contact in contacts %}
                                     <li style="margin-bottom: 10px;">
-                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_detail' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{contact}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
                             </ul> 
                         </td>
-                    </tr>    
+                    </tr>
                     
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Add Company</a>
+                        <a href="" class="btn btn-sm btn-primary">Add Contact</a>
                     </td>
                 </tfoot>
 
             </table>
         
         </div>
-        
 
-        
-        
-    </div>   
-    
-
+    </div>
 </div>
 
-
 {% endblock %}
-

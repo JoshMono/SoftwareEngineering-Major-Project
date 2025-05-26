@@ -1,0 +1,73 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Lead Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-top: 50px; ">Lead</h1>
+    <div  class="d-flex justify-content-center align-items-center" >
+
+        <table class="table">
+    
+                <tr>
+                    <td>
+                        Company    
+                    </td>
+                    <td>
+                        {{lead.company}}    
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Status
+                    </td>
+                    <td>
+                        {{lead.status}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Notes
+                    </td>
+                    <td>
+                        {{lead.notes}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Estimated Value
+                    </td>
+                    <td>
+                        {{lead.estimated_value}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Contacts
+                    </td>
+                    <td>
+                        {{lead.get_contacts_string}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Last Contacted
+                    </td>
+                    <td>
+                        {{lead.last_contact_date}}
+                    </td>
+                </tr>
+                
+            
+
+        </table>
+
+        
+    </div>
+    <a class="btn btn-danger" href="{% url 'lead_delete' lead.id %}">Delete</a>
+    <a class="btn btn-warning" href="{% url 'lead_edit' lead.id %}">Edit</a>
+</div>
+
+{% endblock %}

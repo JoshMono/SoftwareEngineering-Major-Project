@@ -2,11 +2,11 @@
 {% load static %}
 
 
-{% block title %}Quotes{% endblock %}
+{% block title %}Leads{% endblock %}
 
 {% block content %}
 
-<h1>Quotes</h1>
+<h1>Leads</h1>
 
 <div class="container" style="max-width: 90%;">
 
@@ -23,27 +23,39 @@
                     Notes
                 </th>
                 <th>
+                    Estimated Value
+                </th>
+                <th>
                     Contacts
+                </th>
+                <th>
+                    Last Contacted
                 </th>
                 <th></th>
             </tr>
         </thead>
-        {% for quote in quotes %}
+        {% for lead in leads %}
             <tr>
                 <td>
-                    {{quote.company}}    
+                    {{lead.company}}    
                 </td>
                 <td>
-                    {{quote.status}}
+                    {{lead.status}}
                 </td>
                 <td>
-                    {{quote.notes}}
+                    {{lead.notes}}
                 </td>
                 <td>
-                    {{quote.get_contacts_string}}
+                    ${{lead.estimated_value}}
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-primary">View</a>
+                    {{lead.get_contacts_string}}
+                </td>
+                <td>
+                    {{lead.last_contact_date}}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="{% url 'lead_detail' lead.id %}">View</a>
                 </td>
             </tr>
         {% endfor %}

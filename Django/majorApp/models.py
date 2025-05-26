@@ -112,7 +112,7 @@ class QuoteStatusChoices(models.TextChoices):
 class Quote(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True, help_text="Optional to Link to a Lead")
+    lead = models.ForeignKey(Lead, on_delete=models.SET_NULL, null=True, blank=True, help_text="Optional to Link to a Lead")
     status = models.CharField(choices=QuoteStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)
@@ -156,8 +156,7 @@ class InvoiceStatusChoices(models.TextChoices):
 class Invoice(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    lead = models.ForeignKey(Lead, on_delete=models.CASCADE, null=True, blank=True, help_text="Optional to Link to a Lead")
-    quote = models.ForeignKey(Quote, on_delete=models.CASCADE, null=True, blank=True, help_text="Optional to Link to a Quote")
+    quote = models.ForeignKey(Quote, on_delete=models.SET_NULL, null=True, blank=True, help_text="Optional to Link to a Quote")
     status = models.CharField(choices=InvoiceStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)

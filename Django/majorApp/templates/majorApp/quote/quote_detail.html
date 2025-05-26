@@ -2,11 +2,11 @@
 {% load static %}
 
 
-{% block title %}Companies{% endblock %}
+{% block title %}Quote Details{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1 style="margin-top: 50px; ">Lead</h1>
+    <h1 style="margin-top: 50px; ">Quote</h1>
     <div  class="d-flex justify-content-center align-items-center" >
 
         <table class="table">
@@ -16,7 +16,7 @@
                         Company    
                     </td>
                     <td>
-                        {{lead.company}}    
+                        {{quote.company}}    
                     </td>
                 </tr>
                 <tr>
@@ -24,7 +24,7 @@
                         Status
                     </td>
                     <td>
-                        {{lead.status}}
+                        {{quote.status}}
                     </td>
                 </tr>
                 <tr>
@@ -32,15 +32,17 @@
                         Notes
                     </td>
                     <td>
-                        {{lead.notes}}
+                        {{quote.notes}}
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        Estimated Value
+                        Lead
                     </td>
                     <td>
-                        {{lead.estimated_value}}
+                        {% if lead_id %}
+                        <a href="{% url 'lead_detail' lead_id %}">{{quote.lead}}</a>
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>
@@ -48,16 +50,9 @@
                         Contacts
                     </td>
                     <td>
-                        {{lead.get_contacts_string}}
+                        {{quote.get_contacts_string}}
                     </td>
-                </tr>
-                <tr>
-                    <td>
-                        Last Contacted
-                    </td>
-                    <td>
-                        {{lead.last_contact_date}}
-                    </td>
+                    
                 </tr>
                 
             
@@ -66,8 +61,8 @@
 
         
     </div>
-    <a class="btn btn-danger" href="{% url 'lead_delete' lead.id %}">Delete</a>
-    <a class="btn btn-warning" href="{% url 'lead_edit' lead.id %}">Edit</a>
+    <a class="btn btn-danger" href="{% url 'quote_delete' quote.id %}">Delete</a>
+    <a class="btn btn-warning" href="{% url 'quote_edit' quote.id %}">Edit</a>
 </div>
 
 {% endblock %}
