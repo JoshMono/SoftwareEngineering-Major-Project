@@ -14,6 +14,14 @@ urlpatterns = [
     path('company/<company_id>', views.company_detail, name='company_detail'),
     path('create_firm/', views.create_firm, name='create_firm'),
 
+    ### Contact
+    path('contacts/', views.contacts, name='contacts'),
+    path('contact_create/', views.contact_create, name='contact_create'),
+    path('contact_edit/<contact_id>', views.contact_edit, name='contact_edit'),
+    path('contact_delete/<contact_id>', views.contact_delete, name='contact_delete'),
+    path('contact_detail/<contact_id>', views.contact_detail, name='contact_detail'),
+    
+    
     ### Leads
     path('leads/', views.leads, name='leads'),
     path('lead_create/', views.lead_create, name='lead_create'),
@@ -36,5 +44,4 @@ urlpatterns = [
     path('invoice_detail/<invoice_id>', views.invoice_detail, name='invoice_detail'),
 
     path('companies/', views.companies, name='companies'),
-    path('contacts/', views.contacts, name='contacts'),
 ]

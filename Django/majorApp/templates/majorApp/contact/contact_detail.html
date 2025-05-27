@@ -1,0 +1,57 @@
+{% extends 'majorApp/base.html' %}
+{% load static %}
+
+
+{% block title %}Contact Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="margin-top: 50px; ">Contact</h1>
+    <div  class="d-flex justify-content-center align-items-center" >
+
+        <table class="table">
+    
+                <tr>
+                    <td>
+                        First Name    
+                    </td>
+                    <td>
+                        {{contact.first_name}}    
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Last Name
+                    </td>
+                    <td>
+                        {{contact.last_name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Email
+                    </td>
+                    <td>
+                        {{contact.email}}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Phone Number
+                    </td>
+                    <td>
+                        {{contact.phone_number}}
+                    </td>
+                </tr>
+                              
+            
+
+        </table>
+
+        
+    </div>
+    <a class="btn btn-danger" href="{% url 'contact_delete' contact.id %}">Delete</a>
+    <a class="btn btn-warning" href="{% url 'contact_edit' contact.id %}">Edit</a>
+</div>
+
+{% endblock %}

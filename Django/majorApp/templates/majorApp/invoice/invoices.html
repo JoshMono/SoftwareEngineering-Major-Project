@@ -23,7 +23,13 @@
                     Notes
                 </th>
                 <th>
+                    Quote
+                </th>
+                <th>
                     Contacts
+                </th>
+                <th>
+                    Last Contacted
                 </th>
                 <th></th>
             </tr>
@@ -40,7 +46,15 @@
                     {{invoice.notes}}
                 </td>
                 <td>
+                    {% if invoice.quote %}
+                        <a href="{% url 'quote_detail' invoice.quote.id %}">{{invoice.quote}}</a>
+                    {% endif %}
+                </td>
+                <td>
                     {{invoice.get_contacts_string}}
+                </td>
+                <td>
+                    {{invoice.last_contact_date}}
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" href="{% url 'invoice_detail' invoice.id %}">View</a>

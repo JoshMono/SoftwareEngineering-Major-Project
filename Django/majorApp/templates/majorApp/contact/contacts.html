@@ -49,7 +49,7 @@
                     {{contact.get_companies}}
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-primary">View</a>
+                    <a class="btn btn-sm btn-primary" href="{% url 'contact_detail' contact.id %}">View</a>
                 </td>
             </tr>
         {% endfor %}

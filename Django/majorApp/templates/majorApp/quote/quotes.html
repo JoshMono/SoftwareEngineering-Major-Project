@@ -23,7 +23,13 @@
                     Notes
                 </th>
                 <th>
+                    Lead
+                </th>
+                <th>
                     Contacts
+                </th>
+                <th>
+                    Last Contacted
                 </th>
                 <th></th>
             </tr>
@@ -40,7 +46,15 @@
                     {{quote.notes}}
                 </td>
                 <td>
+                    {% if quote.lead %}
+                        <a href="{% url 'lead_detail' quote.lead.id %}">{{quote.lead}}</a>
+                    {% endif %}
+                </td>
+                <td>
                     {{quote.get_contacts_string}}
+                </td>
+                <td>
+                    {{quote.last_contact_date}}
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" href="{% url 'quote_detail' quote.id %}">View</a>

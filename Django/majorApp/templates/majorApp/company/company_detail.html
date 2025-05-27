@@ -148,7 +148,7 @@
                             <ul>
                                 {% for contact in contacts %}
                                     <li style="margin-bottom: 10px;">
-                                        {{contact}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{contact}}<span style="float: right;"><a  href="{% url 'contact_detail' contact.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -159,7 +159,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Add Contact</a>
+                        <a href="{% url 'contact_create'%}" class="btn btn-sm btn-primary">Add Contact</a>
                     </td>
                 </tfoot>
 

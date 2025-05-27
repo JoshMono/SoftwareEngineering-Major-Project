@@ -54,7 +54,7 @@ class CreateLeadForm(ModelForm):
 class CreateQuoteForm(ModelForm):
     class Meta:
         model = Quote
-        fields = ["company", "status", "notes", "lead", "contacts"]
+        fields = ["company", "status", "notes", "lead", "last_contact_date", "contacts"]
 
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
@@ -72,7 +72,7 @@ class CreateQuoteForm(ModelForm):
 class CreateInvoiceForm(ModelForm):
     class Meta:
         model = Invoice
-        fields = ["company", "status", "notes", "quote", "contacts"]
+        fields = ["company", "status", "notes", "quote", "last_contact_date", "contacts"]
 
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
@@ -86,4 +86,10 @@ class CreateInvoiceForm(ModelForm):
         self.fields['quote'].queryset = Quote.objects.filter(company__firm_id=firm_id)
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
+      
+
+class CreateContactForm(ModelForm):
+    class Meta:
+        model = Contact
+        fields = ["first_name", "last_name", "email", "phone_number"]
       

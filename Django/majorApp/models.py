@@ -116,6 +116,7 @@ class Quote(models.Model):
     status = models.CharField(choices=QuoteStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)
+    last_contact_date = models.DateField(default=datetime.date.today(), null=True, blank=True)
 
     def __str__(self):
         return f"{self.company} - ${self.get_total_price()}"
@@ -160,6 +161,7 @@ class Invoice(models.Model):
     status = models.CharField(choices=InvoiceStatusChoices.choices, max_length=50, null=False)
     notes = models.TextField(blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)
+    last_contact_date = models.DateField(default=datetime.date.today(), null=True, blank=True)
 
     def __str__(self):
         return f"{self.company} - ${self.get_total_price()}"

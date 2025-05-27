@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Firm, Company, Lead, Quote, Invoice, Contact
-from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm
+from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
 from .logic import file_management
 
 from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm
@@ -15,8 +15,6 @@ class CustomSignupView(SignupView):
     template_name = "accounts/signup.html"
 
 
-
-# Create your views here.
 @login_required
 def dashboard(request):
     if request.method == 'POST':
@@ -154,6 +152,19 @@ def companies(request):
     return render(request, "majorApp/company/companies.html", context)
 
 
+
+
+
+
+
+
+
+
+
+###
+### Contact Views
+###
+
 @login_required
 def contacts(request):
 
@@ -165,6 +176,70 @@ def contacts(request):
     context['contacts'] = contacts
     
     return render(request, "majorApp/contact/contacts.html", context)
+
+
+def contact_detail(request, contact_id):
+    contact = Contact.objects.get(id=contact_id)
+    firm = contact.get_firm()
+    user_firm_id = request.user.firm.id
+    context = {}
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+
+    context['contact'] = contact
+    
+    return render(request, "majorApp/contact/contact_detail.html", context)   
+
+@login_required
+def contact_create(request):
+    if request.method == "POST":
+        form = CreateContactForm(request.POST)
+        if form.is_valid():
+            firm = request.user.firm
+            form.firm = firm 
+            print(form)
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        form = CreateContactForm()
+        
+    return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Create"})
+
+
+@login_required
+def contact_edit(request, contact_id):
+    contact = Contact.objects.get(id=contact_id)
+    firm = contact.get_firm()
+    user_firm = request.user.firm
+    
+    if firm.id != user_firm.id:
+        return HttpResponseForbidden("Permission Denied")
+    if request.method == "POST":
+        form = CreateContactForm(request.POST, instance=contact)
+        if form.is_valid():
+            form.firm = user_firm 
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        form = CreateContactForm(instance=contact)
+        
+    return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Edit"})
+
+@login_required
+def contact_delete(request, invoice_id):
+    contact = Contact.objects.get(id=invoice_id)
+    firm = contact.get_firm()
+    user_firm_id = request.user.firm.id
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    
+    if request.method == "POST":
+        contact.delete()
+        return redirect('/dashboard')
+         
+    return render(request, "majorApp/general/comfirm_delete.html", {"object": contact})
+
+
 
 
 
@@ -416,5 +491,6 @@ def invoice_delete(request, invoice_id):
         return redirect('/dashboard')
          
     return render(request, "majorApp/general/comfirm_delete.html", {"object": invoice})
+
 
 
