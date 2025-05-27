@@ -65,69 +65,6 @@ def create_firm(request):
     else:
         context["form"] = CreateFirmForm()
         return render(request, "majorApp/firm/create_firm.html", context)
-
-
-@login_required
-def company_detail(request, company_id):
-
-    company = Company.objects.get(id=company_id)
-    firm = company.get_firm()
-    
-    if firm != request.user.firm:
-        return HttpResponseForbidden("Permission Denied")
-    context = {}
-    context["company"] = company
-    
-    leads = Lead.objects.filter(Q(company_id=company_id) & (Q(status="IC") | Q(status="QS")))
-    quotes = Quote.objects.filter(Q(company_id=company_id) & (Q(status="D") | Q(status="S")))
-    invoices = Invoice.objects.filter(Q(company_id=company_id) & (Q(status="D") | Q(status="S")))
-    contacts = company.contacts.all()
-    context['leads'] = leads
-    context['quotes'] = quotes
-    context['invoices'] = invoices
-    context['contacts'] = contacts
-
-    # context["form"] = CreateFirmForm()
-
-    return render(request, "majorApp/company/company_detail.html", context)
-
-def test_page(request):
-    files = file_management.list_txt_files()  # Always populate the dropdown list
-
-    if request.method == "POST":
-        if request.POST.get("action") == "create":
-            folder = request.POST.get("folder")
-            filename = request.POST.get("filename")
-            content = request.POST.get("content")
-
-            try:
-                file_management.create_file(folder, filename, content)
-                return render(request, "majorApp/test_page.html", {
-                    "success": True,
-                    "files": file_management.list_txt_files()
-                })
-            except Exception as e:
-                return render(request, "majorApp/test_page.html", {
-                    "error": str(e),
-                    "files": file_management.list_txt_files()
-                })
-
-    elif request.method == "GET":
-        if request.GET.get("action") == "search":
-            selected_file = request.GET.get("selected_file")
-            search_term = request.GET.get("file_search", "").strip()
-
-            if selected_file and search_term:
-                count = file_management.search_word_in_file(selected_file, search_term)
-                return render(request, "majorApp/test_page.html", {
-                    "files": files,
-                    "search_result": f"The word '{search_term}' appears {count} time(s) in '{selected_file}'."
-                })
-
-    return render(request, "majorApp/test_page.html", {
-        "files": files
-    })
-
     
 
 
@@ -137,7 +74,9 @@ def test_page(request):
 
 
 
-
+###
+### Company Views
+###
 
 @login_required
 def companies(request):
@@ -151,9 +90,77 @@ def companies(request):
     
     return render(request, "majorApp/company/companies.html", context)
 
+@login_required
+def company_detail(request, company_id):
+
+    company = Company.objects.get(id=company_id)
+    firm = company.get_firm()
+    
+    if firm != request.user.firm:
+        return HttpResponseForbidden("Permission Denied")
+    context = {}
+    context["company"] = company
+    
+    leads = Lead.objects.filter(company_id=company_id)
+    quotes = Quote.objects.filter(company_id=company_id)
+    invoices = Invoice.objects.filter(company_id=company_id)
+    contacts = company.contacts.all()
+    context['leads'] = leads
+    context['quotes'] = quotes
+    context['invoices'] = invoices
+    context['contacts'] = contacts
+
+    return render(request, "majorApp/company/company_detail.html", context)
+
+@login_required
+def company_create(request):
+
+    if request.method == "POST":
+        form = CreateContactForm(request.POST, firm_id=request.user.firm.id)
+        if form.is_valid():
+            
+            firm = request.user.firm
+            form.instance.firm = firm 
+            instance = form.save()
+            
 
 
+    return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Create"})
 
+
+@login_required
+def company_edit(request, contact_id):
+    contact = Contact.objects.get(id=contact_id)
+    firm = contact.get_firm()
+    user_firm = request.user.firm
+    
+    if firm.id != user_firm.id:
+        return HttpResponseForbidden("Permission Denied")
+    if request.method == "POST":
+        form = CreateContactForm(request.POST, instance=contact, firm_id=user_firm.id)
+        if form.is_valid():
+            form.firm = user_firm 
+            instance = form.save()
+            instance.companies.set(form.cleaned_data.get("companies"))
+            return redirect('/dashboard')
+    else:     
+        form = CreateContactForm(instance=contact, firm_id=user_firm.id)
+        
+    return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Edit"})
+
+@login_required
+def company_delete(request, invoice_id):
+    contact = Contact.objects.get(id=invoice_id)
+    firm = contact.get_firm()
+    user_firm_id = request.user.firm.id
+    if firm.id != user_firm_id:
+        return HttpResponseForbidden("Permission Denied")
+    
+    if request.method == "POST":
+        contact.delete()
+        return redirect('/dashboard')
+         
+    return render(request, "majorApp/general/comfirm_delete.html", {"object": contact})
 
 
 
@@ -192,17 +199,22 @@ def contact_detail(request, contact_id):
 
 @login_required
 def contact_create(request):
+    company_id = request.GET.get("company_id")
     if request.method == "POST":
-        form = CreateContactForm(request.POST)
+        form = CreateContactForm(request.POST, firm_id=request.user.firm.id)
         if form.is_valid():
+            
             firm = request.user.firm
-            form.firm = firm 
-            print(form)
-            form.save()
-            return redirect('/dashboard')
+            form.instance.firm = firm 
+            instance = form.save()
+            instance.companies.add(Company.objects.get(id=company_id))  
+            if company_id:
+                return redirect("company_detail", company_id=company_id)
+
+            return redirect("contacts")
+
     else:     
-        form = CreateContactForm()
-        
+        form = CreateContactForm(firm_id=request.user.firm.id, company_id=company_id)
     return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Create"})
 
 
@@ -215,13 +227,14 @@ def contact_edit(request, contact_id):
     if firm.id != user_firm.id:
         return HttpResponseForbidden("Permission Denied")
     if request.method == "POST":
-        form = CreateContactForm(request.POST, instance=contact)
+        form = CreateContactForm(request.POST, instance=contact, firm_id=user_firm.id)
         if form.is_valid():
             form.firm = user_firm 
-            form.save()
+            instance = form.save()
+            instance.companies.set(form.cleaned_data.get("companies"))
             return redirect('/dashboard')
     else:     
-        form = CreateContactForm(instance=contact)
+        form = CreateContactForm(instance=contact, firm_id=user_firm.id)
         
     return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Edit"})
 
@@ -362,6 +375,7 @@ def quote_detail(request, quote_id):
 @login_required
 def quote_create(request):
 
+    context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
         form = CreateQuoteForm(request.POST, firm_id=firm_id)
@@ -370,9 +384,16 @@ def quote_create(request):
             return redirect('/dashboard')
     else:     
         company_id = request.GET.get("company_id")
-        form = CreateQuoteForm(firm_id=firm_id, company_id=company_id)
+        if company_id:
+            company = Company.objects.get(id=company_id)
+            context["company"] = company
+            form = CreateQuoteForm(firm_id=firm_id, company=company)
+        else:
+            form = CreateQuoteForm(firm_id=firm_id)
         
-    return render(request, "majorApp/quote/quote_create.html", {"form": form, "create_edit": "Create"})
+    context["form"] = form
+    context["create_edit"] = "Create"
+    return render(request, "majorApp/quote/quote_create.html", context=context)
 
 
 @login_required
@@ -380,6 +401,9 @@ def quote_edit(request, quote_id):
     quote = Quote.objects.get(id=quote_id)
     firm = quote.get_firm()
     user_firm_id = request.user.firm.id
+
+    context = {}
+    context["company"] = quote.company
     
     if firm.id != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
@@ -390,8 +414,12 @@ def quote_edit(request, quote_id):
             return redirect('/dashboard')
     else:     
         form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
+    
+    context["form"] = form
+    context["create_edit"] = "Edit"
         
-    return render(request, "majorApp/quote/quote_create.html", {"form": form, "create_edit": "Edit"})
+    
+    return render(request, "majorApp/quote/quote_create.html", context=context)
 
 @login_required
 def quote_delete(request, quote_id):

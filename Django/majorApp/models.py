@@ -32,7 +32,7 @@ class Company(models.Model):
     name = models.TextField()
     address = models.TextField(null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)
-    contacts = models.ManyToManyField("majorApp.Contact", null=True, blank=True)
+    contacts = models.ManyToManyField("majorApp.Contact", related_name='companies', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -71,7 +71,7 @@ class Contact(models.Model):
         return self.firm
     
     def get_companies(self):
-        companies = self.company_set.all()
+        companies = self.companies.all()
         return concatonate_list_of_strings_with_ampersand(companies)
     
     

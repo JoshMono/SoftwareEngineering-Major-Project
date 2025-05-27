@@ -11,15 +11,22 @@ urlpatterns = [
     ### Login/Signup
     path("accounts/signup/", views.CustomSignupView.as_view(), name="account_signup"),
 
-    path('company/<company_id>', views.company_detail, name='company_detail'),
     path('create_firm/', views.create_firm, name='create_firm'),
 
-    ### Contact
+    ### Companies
     path('contacts/', views.contacts, name='contacts'),
     path('contact_create/', views.contact_create, name='contact_create'),
     path('contact_edit/<contact_id>', views.contact_edit, name='contact_edit'),
     path('contact_delete/<contact_id>', views.contact_delete, name='contact_delete'),
-    path('contact_detail/<contact_id>', views.contact_detail, name='contact_detail'),
+    path('company/<company_id>', views.company_detail, name='company_detail'),
+
+
+    ### Contact
+    path('companies/', views.companies, name='companies'),
+    path('company_create/', views.company_create, name='company_create'),
+    path('company_edit/<company_id>', views.company_edit, name='company_edit'),
+    path('company_delete/<company_id>', views.company_delete, name='company_delete'),
+    path('company_detail/<company_id>', views.company_detail, name='company_detail'),
     
     
     ### Leads
@@ -43,5 +50,5 @@ urlpatterns = [
     path('invoice_delete/<invoice_id>', views.invoice_delete, name='invoice_delete'),
     path('invoice_detail/<invoice_id>', views.invoice_detail, name='invoice_detail'),
 
-    path('companies/', views.companies, name='companies'),
+    
 ]

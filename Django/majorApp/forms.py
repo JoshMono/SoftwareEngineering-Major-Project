@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, DateField, DateInput, HiddenInput
+from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
 from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice
 from allauth.account.forms import SignupForm
 
@@ -58,10 +58,9 @@ class CreateQuoteForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
-        company_id = kwargs.pop("company_id", None)
+        company = kwargs.pop("company", None)
         super().__init__(*args, **kwargs)
-        if company_id:
-            company = Company.objects.get(id=company_id)
+        if company:
             self.fields['company'].initial = company
             self.fields['company'].widget = HiddenInput()
             
@@ -89,7 +88,20 @@ class CreateInvoiceForm(ModelForm):
       
 
 class CreateContactForm(ModelForm):
+
+    companies = ModelMultipleChoiceField(queryset=None, required=False, widget=CheckboxSelectMultiple)
+
     class Meta:
         model = Contact
         fields = ["first_name", "last_name", "email", "phone_number"]
+
+    def __init__(self, *args, **kwargs):
+        firm_id = kwargs.pop("firm_id", None) 
+        company_id = kwargs.pop("company_id", None) 
+        super().__init__(*args, **kwargs)
+        if company_id:
+            del self.fields["companies"]
+        else:
+            self.fields["companies"].queryset = Company.objects.filter(firm_id=firm_id)
+            self.fields["companies"].initial = self.instance.companies.all()
       
