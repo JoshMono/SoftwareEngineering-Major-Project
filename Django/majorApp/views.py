@@ -116,16 +116,18 @@ def company_detail(request, company_id):
 def company_create(request):
 
     if request.method == "POST":
-        form = CreateContactForm(request.POST, firm_id=request.user.firm.id)
+        form = CreateCompanyForm(request.POST, firm_id=request.user.firm.id)
         if form.is_valid():
             
             firm = request.user.firm
             form.instance.firm = firm 
-            instance = form.save()
-            
+            form.save()
+            return redirect('/dashboard')
+    else:     
+        
+        form = CreateCompanyForm(firm_id=request.user.firm.id)
 
-
-    return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Create"})
+    return render(request, "majorApp/company/company_create.html", {"form": form, "create_edit": "Create"})
 
 
 @login_required
@@ -298,7 +300,8 @@ def lead_create(request):
             form.save()
             return redirect('/dashboard')
     else:     
-        form = CreateLeadForm(firm_id=firm_id)
+        company_id = request.GET.get("company_id")
+        form = CreateLeadForm(firm_id=firm_id, company_id=company_id)
         
     return render(request, "majorApp/lead/lead_create.html", {"form": form, "create_edit": "Create"})
 
@@ -390,6 +393,7 @@ def quote_create(request):
             form = CreateQuoteForm(firm_id=firm_id, company=company)
         else:
             form = CreateQuoteForm(firm_id=firm_id)
+        
         
     context["form"] = form
     context["create_edit"] = "Create"

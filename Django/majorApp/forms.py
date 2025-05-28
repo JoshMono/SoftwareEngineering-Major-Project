@@ -11,14 +11,6 @@ class CustomUserSignupForm(SignupForm):
     phone_number = CharField(max_length=15, required=True)
     dob = DateField(required=True, widget=DateInput(attrs={'type': 'date'}))
 
-
-class CreateCompanyForm(ModelForm):
-    class Meta:
-        model = Company
-        fields = ["name", "address"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         
         
 class CreateFirmForm(ModelForm):
@@ -28,6 +20,17 @@ class CreateFirmForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+class CreateCompanyForm(ModelForm):
+    class Meta:
+        model = Company
+        fields = ["name", "address", "contacts"]
+
+    def __init__(self, *args, **kwargs):
+        firm_id = kwargs.pop("firm_id", None)
+        super().__init__(*args, **kwargs)
+        
+        self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
         
 
 class CreateLeadForm(ModelForm):
@@ -37,9 +40,14 @@ class CreateLeadForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
+        company_id = kwargs.pop("company_id", None)
         super().__init__(*args, **kwargs)
-        
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
+        if company_id:
+            company = Company.objects.get(id=company_id)
+            self.fields['company'].initial = company
+            self.fields['company'].widget = HiddenInput()
+
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
       
 
@@ -63,8 +71,10 @@ class CreateQuoteForm(ModelForm):
         if company:
             self.fields['company'].initial = company
             self.fields['company'].widget = HiddenInput()
-            
-        self.fields['lead'].queryset = Lead.objects.filter(company__firm_id=firm_id)
+            self.fields['lead'].queryset = Lead.objects.filter(company=company)
+        else:
+            self.fields['lead'].queryset = Lead.objects.filter(company__firm_id=firm_id)
+
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
       
@@ -81,8 +91,10 @@ class CreateInvoiceForm(ModelForm):
             company = Company.objects.get(id=company_id)
             self.fields['company'].initial = company
             self.fields['company'].widget = HiddenInput()
-            
-        self.fields['quote'].queryset = Quote.objects.filter(company__firm_id=firm_id)
+            self.fields['quote'].queryset = Quote.objects.filter(company=company)
+        else:
+            self.fields['quote'].queryset = Quote.objects.filter(company__firm_id=firm_id)
+
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
       

@@ -42,7 +42,7 @@ class Company(models.Model):
     
     def get_contacts_string(self):
         contacts = self.contacts.all()
-
+        return concatonate_list_of_strings_with_ampersand(contacts)
     
     def get_open_leads_count(self):
         open_leads_count = Lead.objects.filter(Q(company_id=self.id) & (Q(status="NC") | Q(status="IC") | Q(status="QS"))).count()

@@ -32,7 +32,7 @@
                             <ul>
                                 {% for lead in leads %}
                                     <li style="margin-bottom: 10px;">
-                                        {{lead}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{lead}}<span style="float: right;"><a  href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -43,7 +43,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Add Lead</a>
+                        <a href="{% url 'lead_create' %}?company_id={{company.id}}" class="btn btn-sm btn-primary">Add Lead</a>
                     </td>
                 </tfoot>
 
@@ -71,7 +71,7 @@
                             <ul>
                                 {% for quote in quotes %}
                                     <li style="margin-bottom: 10px;">
-                                        {{quote}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{quote}}<span style="float: right;"><a  href="{% url 'quote_detail' quote.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -109,7 +109,7 @@
                             <ul>
                                 {% for invoice in invoices %}
                                     <li style="margin-bottom: 10px;">
-                                        {{invoice}}<span style="float: right;"><a  href="" class="btn btn-sm btn-warning ">Details</a></span>
+                                        {{invoice}}<span style="float: right;"><a  href="{% url 'invoice_detail' invoice.id %}" class="btn btn-sm btn-warning ">Details</a></span>
                                     </li>
                                     
                                 {% endfor %}
@@ -120,7 +120,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="" class="btn btn-sm btn-primary">Add Invoice</a>
+                        <a href="{% url 'invoice_create' %}?company_id={{company.id}}" class="btn btn-sm btn-primary">Add Invoice</a>
                     </td>
                 </tfoot>
 
