@@ -16,7 +16,7 @@
                         Company    
                     </td>
                     <td>
-                        {{invoice.company}}    
+                       <a href="{% url 'company_detail' invoice.company.id %}">{{invoice.company}}</a>  
                     </td>
                 </tr>
                 <tr>
@@ -24,7 +24,7 @@
                         Status
                     </td>
                     <td>
-                        {{invoice.status}}
+                        {{invoice.get_status_display}}
                     </td>
                 </tr>
                 <tr>

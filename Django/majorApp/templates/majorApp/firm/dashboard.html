@@ -9,18 +9,17 @@
 
 <div class="HeaderDiv">
 
-    <h1>Dashbaord</h1>
+    <h1>Dashboard - {{firm}}</h1>
 
 </div>
 
 
-<h1>Firm: {{firm}}</h1>
 
 
 <div class="container-fluid">
     <div class="row align-items-center ">
           
-        <div class="col-md-3 mb-3 ">
+        <div class="col ">
             <table class="table w-100 TableItems table-responsive" style="overflow-x: hidden; ">
                 <thead>
 
@@ -38,12 +37,11 @@
                     </tr>
                     <tr class="Items ">
                         <td>
-                            <div style="overflow-x: auto; white-space: nowrap; width: 95%; flex-grow: 1;"
- >
-                                <ul style="display: inline-block;">
+                            <div >
+                                <ul>
                                     {% for lead in leads %}
-                                        <li style="margin-bottom: 10px; display: inline-block; width: 90%;">
-                                            {{lead}}<a style="display: inline-block; " href="{% url 'lead_detail' lead.id %}" class="btn btn-sm btn-warning ">Details</a>
+                                        <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
+                                            <a class="Item-A-Tag" href="{% url 'lead_detail' lead.id %}">{{lead}}</a>
                                         </li>
                                         <br>
                                         
@@ -56,14 +54,14 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-primary">Add Lead</a>
+                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-outline-success">Add Lead</a>
                     </td>
                 </tfoot>
 
             </table>
         
         </div>
-        <div class="col-md-3 mb-3 table-responsive">
+        <div class="col">
             <table class="table w-100 TableItems">
                 <thead>
 
@@ -83,8 +81,8 @@
                         <td >
                             <ul>
                                 {% for quote in quotes %}
-                                    <li style="margin-bottom: 10px;">
-                                        {{quote}}<span style="float: right;"><a  href="{% url 'quote_detail' quote.id %}" class="btn btn-sm btn-warning ">Details</a></span>
+                                    <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
+                                        <a class="Item-A-Tag" href="{% url 'quote_detail' quote.id %}">{{quote}}</a>
                                     </li>
                                     
                                 {% endfor %}
@@ -95,14 +93,14 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'quote_create' %}" class="btn btn-sm btn-primary">Add Quote</a>
+                        <a href="{% url 'quote_create' %}" class="btn btn-sm btn-secondary">Add Quote</a>
                     </td>
                 </tfoot>
 
             </table>
         
         </div>
-        <div class="col-md-3 mb-3 ">
+        <div class="col">
             <table class="table w-100 TableItems">
                <thead>
                     <tr>
@@ -121,8 +119,8 @@
                         <td >
                             <ul>
                                 {% for invoice in invoices %}
-                                    <li style="margin-bottom: 10px;">
-                                        {{invoice}}<span style="float: right;"><a  href="{% url 'invoice_detail' invoice.id %}" class="btn btn-sm btn-warning ">Details</a></span>
+                                    <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
+                                        <a class="Item-A-Tag" href="{% url 'invoice_detail' invoice.id %}">{{invoice}}</a>
                                     </li>
                                     
                                 {% endfor %}
@@ -133,52 +131,14 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'invoice_create' %}" class="btn btn-sm btn-primary">Add Invoice</a>
+                        <a href="{% url 'invoice_create' %}" class="btn btn-sm btn-secondary">Add Invoice</a>
                     </td>
                 </tfoot>
 
             </table>
         
         </div>
-        <div class="col-md-3 mb-3 ">
-            <table class="table w-100 TableItems">
-                <thead>
-                    <tr>
-                        <td class="TableLabel">
-                            <h2>Companies</h2>
-                        </td>
-                    </tr>
-
-                </thead>
-                <tbody class="TableBody">
-                    <tr class="TableLabelRow">
-                        <td>
-                            <h2>Active Companies</h2>
-                        </td>
-                    </tr>
-                    <tr class="Items">
-                        <td >
-                            <ul>
-                                {% for company in companies %}
-                                    <li style="margin-bottom: 10px;">
-                                        {{company.name}}<span style="float: right;"><a  href="{% url 'company_detail' company.id %}" class="btn btn-sm btn-warning ">Details</a></span>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
-                        </td>
-                    </tr>    
-                    
-                </tbody>
-                <tfoot>
-                    <td>
-                        <a href="{% url 'company_create' %}" class="btn btn-sm btn-primary">Add Company</a>
-                    </td>
-                </tfoot>
-
-            </table>
         
-        </div>
         
 
         

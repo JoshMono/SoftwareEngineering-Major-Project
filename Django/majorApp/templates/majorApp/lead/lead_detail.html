@@ -16,7 +16,7 @@
                         Company    
                     </td>
                     <td>
-                        {{lead.company}}    
+                         <a href="{% url 'company_detail' lead.company.id %}">{{lead.company}}</a>  
                     </td>
                 </tr>
                 <tr>
@@ -24,7 +24,7 @@
                         Status
                     </td>
                     <td>
-                        {{lead.status}}
+                        {{lead.get_status_display}}
                     </td>
                 </tr>
                 <tr>

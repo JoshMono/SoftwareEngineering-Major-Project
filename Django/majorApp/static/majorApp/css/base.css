@@ -131,3 +131,12 @@
     overflow-y: auto;
     white-space: nowrap;
 }
+
+.Item-A-Tag {
+    color: rgb(0, 0, 0);
+    transition: 0.1s ease-in-out;
+}
+
+.Item-A-Tag:hover {
+    color: rgb(168, 168, 168);
+}

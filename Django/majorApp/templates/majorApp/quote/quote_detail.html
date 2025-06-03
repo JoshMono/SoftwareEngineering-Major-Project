@@ -16,7 +16,7 @@
                         Company    
                     </td>
                     <td>
-                        {{quote.company}}    
+                         <a href="{% url 'company_detail' quote.company.id %}">{{quote.company}}</a> 
                     </td>
                 </tr>
                 <tr>
@@ -24,7 +24,7 @@
                         Status
                     </td>
                     <td>
-                        {{quote.status}}
+                        {{quote.get_status_display}}
                     </td>
                 </tr>
                 <tr>
