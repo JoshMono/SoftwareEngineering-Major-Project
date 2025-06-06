@@ -1,5 +1,5 @@
-from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
-from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice
+from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, modelformset_factory,DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
+from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice, QuoteItem
 from allauth.account.forms import SignupForm
 
 
@@ -43,6 +43,7 @@ class CreateLeadForm(ModelForm):
         company_id = kwargs.pop("company_id", None)
         super().__init__(*args, **kwargs)
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
+        
         if company_id:
             company = Company.objects.get(id=company_id)
             self.fields['company'].initial = company
@@ -58,6 +59,22 @@ class CreateLeadForm(ModelForm):
             self.add_error("estimated_value", "Enter positive amount")
 
 
+
+
+
+class CreateQuoteItemForm(ModelForm): 
+    class Meta:
+        model = QuoteItem
+        fields = ['description','price']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['description'].widget = TextInput()
+        self.fields['description'].required = True
+        self.fields['price'].required = True
+        
+
+CreateQuoteItemFormSet = modelformset_factory(model=QuoteItem, form=CreateQuoteItemForm, extra=0)
 
 class CreateQuoteForm(ModelForm):
     class Meta:

@@ -138,8 +138,8 @@ class Quote(models.Model):
 class QuoteItem(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=12, decimal_places=2)
+    description = models.TextField(blank=False)
+    price = models.DecimalField(max_digits=12, decimal_places=2, null=False, blank=False)
 
     def __str__(self):
         return f"{self.description} - {self.price}"

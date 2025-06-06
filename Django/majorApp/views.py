@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Firm, Company, Lead, Quote, Invoice, Contact
+from .models import Firm, Company, Lead, Quote, Invoice, Contact, QuoteItem
 from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
 from .logic import file_management
 
-from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm
+from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet
 from allauth.account.views import SignupView
 
 
@@ -298,6 +298,8 @@ def lead_create(request):
         form = CreateLeadForm(request.POST, firm_id=firm_id)
         if form.is_valid():
             form.save()
+            if request.GET.get("company_id"):
+                return redirect(f'/company/{request.GET.get("company_id")}')    
             return redirect('/dashboard')
     else:     
         company_id = request.GET.get("company_id")
@@ -381,9 +383,20 @@ def quote_create(request):
     context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
+        form_set = CreateQuoteItemFormSet(request.POST)
         form = CreateQuoteForm(request.POST, firm_id=firm_id)
-        if form.is_valid():
-            form.save()
+        print(request.POST)
+        if form.is_valid() and form_set.is_valid():
+            quote_instance = form.save()
+
+            for form in form_set:
+                item_instance = form.save(commit=False)
+                item_instance.quote = quote_instance
+                item_instance.save()
+
+
+            if request.GET.get("company_id"):
+                return redirect(f'/company/{request.GET.get("company_id")}')  
             return redirect('/dashboard')
     else:     
         company_id = request.GET.get("company_id")
@@ -392,11 +405,15 @@ def quote_create(request):
             context["company"] = company
             form = CreateQuoteForm(firm_id=firm_id, company=company)
         else:
+
             form = CreateQuoteForm(firm_id=firm_id)
+        form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.none())
         
+        context["item_form"] = form_set
         
     context["form"] = form
     context["create_edit"] = "Create"
+
     return render(request, "majorApp/quote/quote_create.html", context=context)
 
 
@@ -411,14 +428,33 @@ def quote_edit(request, quote_id):
     
     if firm.id != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
+    
     if request.method == "POST":
+
+
+        form_set = CreateQuoteItemFormSet(request.POST)
         form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
-        if form.is_valid():
-            form.save()
-            return redirect('/dashboard')
+
+        if form.is_valid() and form_set.is_valid():
+            quote_instance = form.save()
+            print("\n\n\n\n\n")
+            print(form)
+            print("\n\n\n\n\n")
+            test = True
+            for form in form_set:
+                if form.is_valid():
+                    item_instance = form.save(commit=False)
+                    item_instance.quote = quote_instance
+                    item_instance.save()
+                else:
+                    test = False
+            if test:
+                return redirect('/dashboard')
     else:     
         form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
+        form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.filter(quote=quote))
     
+    context["item_form"] = form_set
     context["form"] = form
     context["create_edit"] = "Edit"
         
@@ -484,6 +520,8 @@ def invoice_create(request):
         form = CreateInvoiceForm(request.POST, firm_id=firm_id)
         if form.is_valid():
             form.save()
+            if request.GET.get("company_id"):
+                return redirect(f'/company/{request.GET.get("company_id")}')  
             return redirect('/dashboard')
     else:     
         company_id = request.GET.get("company_id")

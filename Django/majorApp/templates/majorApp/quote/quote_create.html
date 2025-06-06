@@ -7,16 +7,78 @@
 {% block content %}
 <h1>{{create_edit}} Quote</h1>
 <h2>{{company}}</h2>
-<div class="d-flex justify-content-center align-items-center" style="margin-top: 50px;">
-	<form method="post">
+<div class="container bg-light p-3 border justify-content-center align-items-center" style="margin-top: 50px; max-width: 600px;">
+	<form method="post" class="row">
 		{% csrf_token %}
 
 		<table class="table">
-			{{form.as_table}}
+
+			{% for field in form %}
+
+				<div class=" row">
+					<div class="col-auto mb-3">
+						{{ field.label_tag }}
+					</div>
+					<div class="col-auto mb-3">
+						{{ field }}
+					</div> 
+					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
+				</div>
+				{% if field.name == 'status' %}
+					{{ item_form.management_form }}
+					<div>
+						<h5>Quote Items</h2>
+						<div id="item-forms" class="mb-3 row">
+							{% for item_field in item_form %}
+								<div class="col-auto mb-3">
+									{{ item_field.label_tag }}
+								</div>
+								<div class="col-auto mb-3">
+									{{ item_field }}
+								</div> 
+								<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
+							{% endfor %}
+						</div>
+					</div>
+					
+					<button type="button" id="add-item">Add Item</button>
+				{% endif %}
+			{% endfor %}
+
+			
+
+
 		</table>
 		<div style="text-align: center;">
 			<button class="btn btn-primary" type="submit">Save</button>
 		</div>
 	</form>
 </div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let itemFormsContainer = document.querySelector('#item-forms');
+        let addAuthorBtn = document.querySelector('#add-item');
+
+        addAuthorBtn.addEventListener('click', function() {
+            let emptyFormHtml = `<div id="item-forms" class="mb-3 row">
+							{% for item_field in item_form %}
+								<div class="col-auto mb-3">
+									{{ item_field.label_tag }}
+								</div>
+								<div class="col-auto mb-3">
+									{{ item_field }}
+								</div> 
+								<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
+							{% endfor %}
+						</div>`;
+            
+
+           	itemFormsContainer.innerHTML += emptyFormHtml;
+
+
+        });
+    });
+</script>
 {% endblock %}

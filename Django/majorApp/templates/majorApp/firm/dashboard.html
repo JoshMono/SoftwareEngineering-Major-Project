@@ -9,7 +9,7 @@
 
 <div class="HeaderDiv">
 
-    <h1>Dashboard - {{firm}}</h1>
+    <h1>{{firm}}</h1>
 
 </div>
 
@@ -20,7 +20,7 @@
     <div class="row align-items-center ">
           
         <div class="col ">
-            <table class="table w-100 TableItems table-responsive" style="overflow-x: hidden; ">
+            <table class="table w-100 TableItems">
                 <thead>
 
                     <tr>
@@ -54,7 +54,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-outline-success">Add Lead</a>
+                        <a href="{% url 'lead_create' %}" class="btn btn-sm btn-success">Add Lead</a>
                     </td>
                 </tfoot>
 
@@ -93,7 +93,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'quote_create' %}" class="btn btn-sm btn-secondary">Add Quote</a>
+                        <a href="{% url 'quote_create' %}" class="btn btn-sm btn-success">Add Quote</a>
                     </td>
                 </tfoot>
 
@@ -131,7 +131,7 @@
                 </tbody>
                 <tfoot>
                     <td>
-                        <a href="{% url 'invoice_create' %}" class="btn btn-sm btn-secondary">Add Invoice</a>
+                        <a href="{% url 'invoice_create' %}" class="btn btn-sm btn-success">Add Invoice</a>
                     </td>
                 </tfoot>
 
