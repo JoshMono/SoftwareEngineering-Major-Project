@@ -383,16 +383,15 @@ def quote_create(request):
     context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
-        form_set = CreateQuoteItemFormSet(request.POST)
+        form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.none())
         form = CreateQuoteForm(request.POST, firm_id=firm_id)
-        print(request.POST)
+        
         if form.is_valid() and form_set.is_valid():
             quote_instance = form.save()
-
-            for form in form_set:
-                item_instance = form.save(commit=False)
-                item_instance.quote = quote_instance
-                item_instance.save()
+            quote_items = form_set.save(commit=False)
+            for quote_item in quote_items:
+                quote_item.quote = quote_instance
+                quote_item.save()
 
 
             if request.GET.get("company_id"):
@@ -408,9 +407,9 @@ def quote_create(request):
 
             form = CreateQuoteForm(firm_id=firm_id)
         form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.none())
+        print(form_set)
         
-        context["item_form"] = form_set
-        
+        context["form_set"] = form_set
     context["form"] = form
     context["create_edit"] = "Create"
 
@@ -432,29 +431,22 @@ def quote_edit(request, quote_id):
     if request.method == "POST":
 
 
-        form_set = CreateQuoteItemFormSet(request.POST)
+        form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.filter(quote=quote))
         form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
-
+        
         if form.is_valid() and form_set.is_valid():
             quote_instance = form.save()
-            print("\n\n\n\n\n")
-            print(form)
-            print("\n\n\n\n\n")
-            test = True
-            for form in form_set:
-                if form.is_valid():
-                    item_instance = form.save(commit=False)
-                    item_instance.quote = quote_instance
-                    item_instance.save()
-                else:
-                    test = False
-            if test:
-                return redirect('/dashboard')
+            quote_items = form_set.save(commit=False)
+            for quote_item in quote_items:
+                quote_item.quote = quote_instance
+                quote_item.save()
+
+        return redirect('/dashboard') 
     else:     
         form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
-        form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.filter(quote=quote))
+        form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.filter(quote=quote).order_by("created_at"))
     
-    context["item_form"] = form_set
+    context["form_set"] = form_set
     context["form"] = form
     context["create_edit"] = "Edit"
         

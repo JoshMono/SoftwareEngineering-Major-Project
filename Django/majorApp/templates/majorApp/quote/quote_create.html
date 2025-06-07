@@ -25,22 +25,25 @@
 					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
 				</div>
 				{% if field.name == 'status' %}
-					{{ item_form.management_form }}
-					<div>
-						<h5>Quote Items</h2>
+				<div>
+					<h5>Quote Items</h2>
 						<div id="item-forms" class="mb-3 row">
-							{% for item_field in item_form %}
-								<div class="col-auto mb-3">
-									{{ item_field.label_tag }}
-								</div>
-								<div class="col-auto mb-3">
-									{{ item_field }}
-								</div> 
-								<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
-							{% endfor %}
+							{{ form_set.management_form }}
+							<div class="mb-3 row">
+								{% for item_field in form_set %}
+									<div class="col-auto mb-3">
+										{{ item_field.label_tag }}
+									</div>
+									<div class="col-auto mb-3">
+										{{ item_field }}
+									</div> 
+									<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
+								{% endfor %}
+							</div>
 						</div>
 					</div>
 					
+					<div id="totalDiv" style="text-align: center;"></div>
 					<button type="button" id="add-item">Add Item</button>
 				{% endif %}
 			{% endfor %}
@@ -60,24 +63,58 @@
     document.addEventListener('DOMContentLoaded', function() {
         let itemFormsContainer = document.querySelector('#item-forms');
         let addAuthorBtn = document.querySelector('#add-item');
+		const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+		let formCount = parseInt(totalForms.value);
+		const totalDiv = document.getElementById("totalDiv");
+		let totalPrice = 0;
 
+		refreshPriceListener();
+		updateTotal();
+
+		function refreshPriceListener() {
+			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
+			
+			price_inputs.forEach(element => {
+				
+				element.addEventListener('keyup', updateTotal)
+			});
+		}
+
+		function updateTotal() {
+			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
+			totalPrice = 0;
+			price_inputs.forEach(element => {
+				totalPrice = totalPrice + parseFloat(element.value)
+			});
+			totalDiv.innerHTML = `Total: ${totalPrice}`
+
+		}
+		
         addAuthorBtn.addEventListener('click', function() {
-            let emptyFormHtml = `<div id="item-forms" class="mb-3 row">
-							{% for item_field in item_form %}
-								<div class="col-auto mb-3">
-									{{ item_field.label_tag }}
-								</div>
-								<div class="col-auto mb-3">
-									{{ item_field }}
-								</div> 
-								<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
-							{% endfor %}
-						</div>`;
+            let emptyFormHtml = `
+							<div class="mb-3 row">
+								{% for item_field in form_set.empty_form.visible_fields  %}
+									<div class="col-auto mb-3">
+										{{ item_field.label_tag }}
+									</div>
+									<div class="col-auto mb-3">
+										{{ item_field }}
+									</div> 
+									<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
+								{% endfor %}
+							</div>`;
             
 
-           	itemFormsContainer.innerHTML += emptyFormHtml;
+    
+    		const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formCount);
+			const newFormElement = document.createElement('div');
+			newFormElement.innerHTML = newFormHtml;
+			itemFormsContainer.appendChild(newFormElement)
 
-
+			
+			formCount = formCount + 1;
+			totalForms.value = formCount;
+			refreshPriceListener()
         });
     });
 </script>

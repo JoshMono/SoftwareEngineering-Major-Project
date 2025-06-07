@@ -72,6 +72,10 @@ class CreateQuoteItemForm(ModelForm):
         self.fields['description'].widget = TextInput()
         self.fields['description'].required = True
         self.fields['price'].required = True
+
+    def clean(self):
+        cleaned_data = super().clean()
+        print(cleaned_data)
         
 
 CreateQuoteItemFormSet = modelformset_factory(model=QuoteItem, form=CreateQuoteItemForm, extra=0)
