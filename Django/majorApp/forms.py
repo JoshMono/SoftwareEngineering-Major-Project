@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, modelformset_factory,DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, modelformset_factory, BaseModelFormSet, DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
 from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice, QuoteItem
 from allauth.account.forms import SignupForm
 
@@ -77,8 +77,16 @@ class CreateQuoteItemForm(ModelForm):
         cleaned_data = super().clean()
         print(cleaned_data)
         
+class BaseQuoteItemFormSet(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.forms:
+            if 'DELETE' in form.fields:
+                form.fields['DELETE'].widget.attrs['style'] = ' display: None;'
+                form.fields['DELETE'].label = ''
 
-CreateQuoteItemFormSet = modelformset_factory(model=QuoteItem, form=CreateQuoteItemForm, extra=0)
+CreateQuoteItemFormSet = modelformset_factory(model=QuoteItem, form=CreateQuoteItemForm, formset=BaseQuoteItemFormSet, extra=1, can_delete=True)
+
 
 class CreateQuoteForm(ModelForm):
     class Meta:

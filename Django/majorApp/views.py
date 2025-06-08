@@ -6,7 +6,7 @@ from .models import Firm, Company, Lead, Quote, Invoice, Contact, QuoteItem
 from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
 from .logic import file_management
 
-from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet
+from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet, CreateQuoteItemForm
 from allauth.account.views import SignupView
 
 
@@ -430,7 +430,7 @@ def quote_edit(request, quote_id):
     
     if request.method == "POST":
 
-
+        print(request.POST)
         form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.filter(quote=quote))
         form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
         
@@ -439,13 +439,14 @@ def quote_edit(request, quote_id):
             quote_items = form_set.save(commit=False)
             for quote_item in quote_items:
                 quote_item.quote = quote_instance
-                quote_item.save()
+            form_set.save()
 
         return redirect('/dashboard') 
     else:     
         form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
         form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.filter(quote=quote).order_by("created_at"))
     
+
     context["form_set"] = form_set
     context["form"] = form
     context["create_edit"] = "Edit"

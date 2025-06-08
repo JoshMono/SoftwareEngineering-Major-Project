@@ -7,7 +7,7 @@
 {% block content %}
 <h1>{{create_edit}} Quote</h1>
 <h2>{{company}}</h2>
-<div class="container bg-light p-3 border justify-content-center align-items-center" style="margin-top: 50px; max-width: 600px;">
+<div class="container bg-light p-3 border justify-content-center align-items-center" style="margin-top: 50px; max-width: 1800px;">
 	<form method="post" class="row">
 		{% csrf_token %}
 
@@ -16,10 +16,8 @@
 			{% for field in form %}
 
 				<div class=" row">
-					<div class="col-auto mb-3">
+					<div class="col-auto mb-3 form-control">
 						{{ field.label_tag }}
-					</div>
-					<div class="col-auto mb-3">
 						{{ field }}
 					</div> 
 					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
@@ -29,17 +27,19 @@
 					<h5>Quote Items</h2>
 						<div id="item-forms" class="mb-3 row">
 							{{ form_set.management_form }}
-							<div class="mb-3 row">
-								{% for item_field in form_set %}
+							{% for form in form_set %}
+								
+								<div class="mb-3 row formset-item">
 									<div class="col-auto mb-3">
-										{{ item_field.label_tag }}
-									</div>
-									<div class="col-auto mb-3">
-										{{ item_field }}
+										{{ form }}
 									</div> 
-									<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
-								{% endfor %}
-							</div>
+									<div class="col-auto mb-3">
+										<button type="button" class="delete-item">Delete</button>
+									</div> 
+									<div style="color: red;" class="col-auto mb-3">{{ form.errors }}</div>
+								</div>
+								
+							{% endfor %}
 						</div>
 					</div>
 					
@@ -70,6 +70,7 @@
 
 		refreshPriceListener();
 		updateTotal();
+		updateDeleteButtons();
 
 		function refreshPriceListener() {
 			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
@@ -84,25 +85,59 @@
 			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
 			totalPrice = 0;
 			price_inputs.forEach(element => {
-				totalPrice = totalPrice + parseFloat(element.value)
+				totalPrice = totalPrice + parseFloat(element.value) || 0;
 			});
 			totalDiv.innerHTML = `Total: ${totalPrice}`
+			
 
+		}
+
+		function updateDeleteButtons() {
+			document.querySelectorAll('.delete-item').forEach((btn) => {
+				btn.onclick = function () {
+					console.log("Here")
+					const formItem = btn.closest('.formset-item');
+					if (!formItem) return;
+
+					const deleteInput = formItem.querySelector('input[name$="-DELETE"]');
+					if (deleteInput) {
+						deleteInput.checked = true;
+						formItem.style.display = 'none';
+					}
+				};
+    	    });
 		}
 		
         addAuthorBtn.addEventListener('click', function() {
             let emptyFormHtml = `
-							<div class="mb-3 row">
-								{% for item_field in form_set.empty_form.visible_fields  %}
-									<div class="col-auto mb-3">
-										{{ item_field.label_tag }}
-									</div>
-									<div class="col-auto mb-3">
-										{{ item_field }}
-									</div> 
-									<div style="color: red;" class="col-auto mb-3">{{ item_field.errors }}</div>
-								{% endfor %}
-							</div>`;
+
+			
+						<div class="mb-3 row formset-item">
+
+							<div class="col-auto mb-3 class="form-control"">
+								{% for field in form_set.empty_form.visible_fields %}
+									{% if field.name == "DELETE" %}
+										<div style="display: None;">
+											{{ field.label_tag }}
+											{{ field }}
+										</div>
+									{% else %}
+										<div >
+											{{ field.label_tag }}
+											{{ field }}
+										</div>
+									{% endif %}
+									{% endfor %}
+								</div> 
+							
+								<div class="col-auto mb-3">
+									<button type="button" class="delete-item">Delete</button>
+								</div> 
+							<div style="color: red;" class="col-auto mb-3">{{ form_set.empty_form.errors }}</div>
+									
+								
+						</div>
+							`;
             
 
     
@@ -115,7 +150,10 @@
 			formCount = formCount + 1;
 			totalForms.value = formCount;
 			refreshPriceListener()
+			updateDeleteButtons();
         });
-    });
+	});
+		
 </script>
+
 {% endblock %}
