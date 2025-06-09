@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from .models import Firm, Company, Lead, Quote, Invoice, Contact, QuoteItem
+from .models import Firm, Company, Lead, Quote, Invoice, Contact, QuoteItem, InvoiceItem
 from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
 from .logic import file_management
 
-from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet, CreateQuoteItemForm
+from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet, CreateQuoteItemForm, CreateInvoiceItemFormSet
 from allauth.account.views import SignupView
 
 
@@ -407,7 +407,6 @@ def quote_create(request):
 
             form = CreateQuoteForm(firm_id=firm_id)
         form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.none())
-        print(form_set)
         
         context["form_set"] = form_set
     context["form"] = form
@@ -430,7 +429,6 @@ def quote_edit(request, quote_id):
     
     if request.method == "POST":
 
-        print(request.POST)
         form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.filter(quote=quote))
         form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
         
@@ -508,19 +506,39 @@ def invoice_detail(request, invoice_id):
 @login_required
 def invoice_create(request):
 
+    context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
+        form_set = CreateInvoiceItemFormSet(request.POST, queryset=Invoice.objects.none())
         form = CreateInvoiceForm(request.POST, firm_id=firm_id)
-        if form.is_valid():
-            form.save()
+        
+        if form.is_valid() and form_set.is_valid():
+            invoice_instance = form.save()
+            invoice_items = form_set.save(commit=False)
+            for invoice_item in invoice_items:
+                invoice_item.invoice = invoice_instance
+                invoice_item.save()
+
+
             if request.GET.get("company_id"):
                 return redirect(f'/company/{request.GET.get("company_id")}')  
             return redirect('/dashboard')
     else:     
         company_id = request.GET.get("company_id")
-        form = CreateInvoiceForm(firm_id=firm_id, company_id=company_id)
+        if company_id:
+            company = Company.objects.get(id=company_id)
+            context["company"] = company
+            form = CreateInvoiceForm(firm_id=firm_id, company=company)
+        else:
+
+            form = CreateInvoiceForm(firm_id=firm_id)
+        form_set = CreateInvoiceItemFormSet(queryset=InvoiceItem.objects.none())
         
-    return render(request, "majorApp/invoice/invoice_create.html", {"form": form, "create_edit": "Create"})
+        context["form_set"] = form_set
+    context["form"] = form
+    context["create_edit"] = "Create"
+
+    return render(request, "majorApp/invoice/invoice_create.html", context=context)
 
 
 @login_required
@@ -528,18 +546,37 @@ def invoice_edit(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id)
     firm = invoice.get_firm()
     user_firm_id = request.user.firm.id
+
+    context = {}
+    context["company"] = invoice.company
     
     if firm.id != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
+    
     if request.method == "POST":
+
+        form_set = CreateInvoiceItemFormSet(request.POST, queryset=InvoiceItem.objects.filter(invoice=invoice))
         form = CreateInvoiceForm(request.POST, instance=invoice, firm_id=user_firm_id)
-        if form.is_valid():
-            form.save()
-            return redirect('/dashboard')
+        
+        if form.is_valid() and form_set.is_valid():
+            invoice_instance = form.save()
+            invoice_items = form_set.save(commit=False)
+            for invoice_item in invoice_items:
+                invoice_item.invoice = invoice_instance
+            form_set.save()
+
+        return redirect('/dashboard') 
     else:     
         form = CreateInvoiceForm(instance=invoice, firm_id=user_firm_id)
+        form_set = CreateInvoiceItemFormSet(queryset=InvoiceItem.objects.filter(invoice=invoice).order_by("created_at"))
+    
+
+    context["form_set"] = form_set
+    context["form"] = form
+    context["create_edit"] = "Edit"
         
-    return render(request, "majorApp/invoice/invoice_create.html", {"form": form, "create_edit": "Edit"})
+    
+    return render(request, "majorApp/invoice/invoice_create.html", context=context)
 
 @login_required
 def invoice_delete(request, invoice_id):

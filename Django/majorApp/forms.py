@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, modelformset_factory, BaseModelFormSet, DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
-from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice, QuoteItem
+from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice, QuoteItem, InvoiceItem
 from allauth.account.forms import SignupForm
 
 
@@ -106,6 +106,30 @@ class CreateQuoteForm(ModelForm):
 
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
+
+
+
+
+class CreateInvoiceItemForm(ModelForm): 
+    class Meta:
+        model = InvoiceItem
+        fields = ['description','price']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['description'].widget = TextInput()
+        self.fields['description'].required = True
+        self.fields['price'].required = True
+        
+class BaseInvoiceItemFormSet(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.forms:
+            if 'DELETE' in form.fields:
+                form.fields['DELETE'].widget.attrs['style'] = ' display: None;'
+                form.fields['DELETE'].label = ''
+
+CreateInvoiceItemFormSet = modelformset_factory(model=InvoiceItem, form=CreateInvoiceItemForm, formset=BaseInvoiceItemFormSet, extra=1, can_delete=True)
       
 class CreateInvoiceForm(ModelForm):
     class Meta:

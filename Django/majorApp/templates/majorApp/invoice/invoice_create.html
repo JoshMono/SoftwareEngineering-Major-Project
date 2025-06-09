@@ -6,16 +6,154 @@
 
 {% block content %}
 <h1>{{create_edit}} Invoice</h1>
-<div class="d-flex justify-content-center align-items-center" style="margin-top: 50px;">
-	<form method="post">
+<h2>{{company}}</h2>
+<div class="container bg-light p-3 border justify-content-center align-items-center" style="margin-top: 50px; max-width: 1800px;">
+	<form method="post" class="row">
 		{% csrf_token %}
 
 		<table class="table">
-			{{form.as_table}}
+
+			{% for field in form %}
+
+				<div class=" row">
+					<div class="col-auto mb-3 form-control">
+						{{ field.label_tag }}
+						{{ field }}
+					</div> 
+					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
+				</div>
+				{% if field.name == 'status' %}
+				<div>
+					<h5>Invoice Items</h2>
+						<div id="item-forms" class="mb-3 row">
+							{{ form_set.management_form }}
+							{% for form in form_set %}
+								
+								<div class="mb-3 row formset-item">
+									<div class="col-auto mb-3">
+										{{ form }}
+									</div> 
+									<div class="col-auto mb-3">
+										<button type="button" class="delete-item">Delete</button>
+									</div> 
+									<div style="color: red;" class="col-auto mb-3">{{ form.errors }}</div>
+								</div>
+								
+							{% endfor %}
+						</div>
+					</div>
+					
+					<div id="totalDiv" style="text-align: center;"></div>
+					<button type="button" id="add-item">Add Item</button>
+				{% endif %}
+			{% endfor %}
+
+			
+
+
 		</table>
 		<div style="text-align: center;">
 			<button class="btn btn-primary" type="submit">Save</button>
 		</div>
 	</form>
 </div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let itemFormsContainer = document.querySelector('#item-forms');
+        let addAuthorBtn = document.querySelector('#add-item');
+		const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+		let formCount = parseInt(totalForms.value);
+		const totalDiv = document.getElementById("totalDiv");
+		let totalPrice = 0;
+
+		refreshPriceListener();
+		updateTotal();
+		updateDeleteButtons();
+
+		function refreshPriceListener() {
+			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
+			
+			price_inputs.forEach(element => {
+				
+				element.addEventListener('keyup', updateTotal)
+			});
+		}
+
+		function updateTotal() {
+			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
+			totalPrice = 0;
+			price_inputs.forEach(element => {
+				totalPrice = totalPrice + parseFloat(element.value) || 0;
+			});
+			totalDiv.innerHTML = `Total: ${totalPrice}`
+			
+
+		}
+
+		function updateDeleteButtons() {
+			document.querySelectorAll('.delete-item').forEach((btn) => {
+				btn.onclick = function () {
+					console.log("Here")
+					const formItem = btn.closest('.formset-item');
+					if (!formItem) return;
+
+					const deleteInput = formItem.querySelector('input[name$="-DELETE"]');
+					if (deleteInput) {
+						deleteInput.checked = true;
+						formItem.style.display = 'none';
+					}
+				};
+    	    });
+		}
+		
+        addAuthorBtn.addEventListener('click', function() {
+            let emptyFormHtml = `
+
+			
+						<div class="mb-3 row formset-item">
+
+							<div class="col-auto mb-3 class="form-control"">
+								{% for field in form_set.empty_form.visible_fields %}
+									{% if field.name == "DELETE" %}
+										<div style="display: None;">
+											{{ field.label_tag }}
+											{{ field }}
+										</div>
+									{% else %}
+										<div >
+											{{ field.label_tag }}
+											{{ field }}
+										</div>
+									{% endif %}
+									{% endfor %}
+								</div> 
+							
+								<div class="col-auto mb-3">
+									<button type="button" class="delete-item">Delete</button>
+								</div> 
+							<div style="color: red;" class="col-auto mb-3">{{ form_set.empty_form.errors }}</div>
+									
+								
+						</div>
+							`;
+            
+
+    
+    		const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formCount);
+			const newFormElement = document.createElement('div');
+			newFormElement.innerHTML = newFormHtml;
+			itemFormsContainer.appendChild(newFormElement)
+
+			
+			formCount = formCount + 1;
+			totalForms.value = formCount;
+			refreshPriceListener()
+			updateDeleteButtons();
+        });
+	});
+		
+</script>
+
 {% endblock %}
