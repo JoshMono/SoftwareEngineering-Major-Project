@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, modelformset_factory, BaseModelFormSet, DateField, DateInput, HiddenInput, ModelMultipleChoiceField, CheckboxSelectMultiple
+from django.forms import ModelForm, TextInput, ModelChoiceField, Form, CharField, EmailField, modelformset_factory, BaseModelFormSet, DateField, DateInput, HiddenInput, ChoiceField,ModelMultipleChoiceField, CheckboxSelectMultiple
 from .models import Company, Contact, Firm, Lead, CustomUser, Quote, Invoice, QuoteItem, InvoiceItem
 from allauth.account.forms import SignupForm
 
@@ -29,7 +29,8 @@ class CreateCompanyForm(ModelForm):
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
         super().__init__(*args, **kwargs)
-        
+        self.fields['name'].widget = TextInput()
+        self.fields['address'].widget = TextInput()
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
         
 
@@ -89,6 +90,7 @@ CreateQuoteItemFormSet = modelformset_factory(model=QuoteItem, form=CreateQuoteI
 
 
 class CreateQuoteForm(ModelForm):
+    
     class Meta:
         model = Quote
         fields = ["company", "status", "notes", "lead", "last_contact_date", "contacts"]
@@ -98,9 +100,14 @@ class CreateQuoteForm(ModelForm):
         company = kwargs.pop("company", None)
         super().__init__(*args, **kwargs)
         if company:
+            self.fields['fake_company'] = ChoiceField()
+            self.fields['fake_company'].choices = ((1, company),)
+            self.fields['fake_company'].label = "Company" 
             self.fields['company'].initial = company
             self.fields['company'].widget = HiddenInput()
             self.fields['lead'].queryset = Lead.objects.filter(company=company)
+            self.order_fields(["fake_company", "status", "notes", "lead", "last_contact_date", "contacts"])
+
         else:
             self.fields['lead'].queryset = Lead.objects.filter(company__firm_id=firm_id)
 
@@ -138,13 +145,16 @@ class CreateInvoiceForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
-        company_id = kwargs.pop("company_id", None)
+        company = kwargs.pop("company", None)
         super().__init__(*args, **kwargs)
-        if company_id:
-            company = Company.objects.get(id=company_id)
+        if company:
+            self.fields['fake_company'] = ChoiceField()
+            self.fields['fake_company'].choices = ((1, company),)
+            self.fields['fake_company'].label = "Company" 
             self.fields['company'].initial = company
             self.fields['company'].widget = HiddenInput()
             self.fields['quote'].queryset = Quote.objects.filter(company=company)
+            self.order_fields(["fake_company", "status", "notes", "quote", "last_contact_date", "contacts"])
         else:
             self.fields['quote'].queryset = Quote.objects.filter(company__firm_id=firm_id)
 

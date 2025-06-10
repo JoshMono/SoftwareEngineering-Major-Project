@@ -5,14 +5,25 @@
 {% block title %}Create Lead{% endblock %}
 
 {% block content %}
-<h1>{{create_edit}} Lead</h1>
-<div class="d-flex justify-content-center align-items-center" style="margin-top: 50px;">
-	<form method="post">
+<div class="HeaderDiv">
+	<h1>{{create_edit}} Lead</h1>
+	<h2>{{company}}</h2>
+</div>
+<div class="container  justify-content-center align-items-center" style="margin-top: 50px;">
+	<form method="post" class="p-4 border rounded shadow Create-Form">
 		{% csrf_token %}
 
-		<table class="table">
-			{{form.as_table}}
-		</table>
+		{% for field in form %}
+
+				<div class=" row">
+					<div class="col-auto mb-3 form-control">
+						{{ field.label_tag }}
+						{{ field }}
+					</div> 
+					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
+				</div>
+
+		{% endfor %}
 		<div style="text-align: center;">
 			<button class="btn btn-primary" type="submit">Save</button>
 		</div>

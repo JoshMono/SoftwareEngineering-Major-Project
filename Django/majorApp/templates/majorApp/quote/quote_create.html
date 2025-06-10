@@ -10,50 +10,55 @@
 	<h2>{{company}}</h2>
 </div>
 <div class="container  justify-content-center align-items-center" style="margin-top: 50px;">
-	<form method="post" class="p-4 border rounded shadow">
+	<form method="post" class="p-4 border rounded shadow Create-Form">
 		{% csrf_token %}
 
-		<table class="table">
+		
 
-			{% for field in form %}
+		{% for field in form.visible_fields  %}
 
-				<div class=" row">
-					<div class="col-auto mb-3 form-control">
-						{{ field.label_tag }}
-						{{ field }}
-					</div> 
-					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
-				</div>
-				{% if field.name == 'status' %}
-				<div class="form-control mb-3 row">
-					<div id="item-forms" class=" ">
-							<h5>Quote Items</h2>
-							{{ form_set.management_form }}
-							{% for form in form_set %}
-								
-								<div class="mb-3 row formset-item ">
-									<div class="col-auto mb-3">
-										{{ form }}
-									</div> 
-									<div class="col-auto mb-3">
-										<button type="button" class="delete-item">Delete</button>
-									</div> 
-									<div style="color: red;" class="col-auto mb-3">{{ form.errors }}</div>
-								</div>
-								
-							{% endfor %}
-						</div>
-						<div id="totalDiv" style="text-align: center;"></div>
-						<button type="button" id="add-item">Add Item</button>
+			<div class=" row">
+				<div class="col-auto mb-3 form-control">
+					{{ field.label_tag }}
+					{{ field }}
+					<small class="form-text text-muted">{{ field.help_text }}</small>
+				</div> 
+				<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
+			</div>
+			{% if field.name == 'status' %}
+			<div class="form-control mb-3 row">
+				<div id="item-forms">
+						<h5>Quote Items</h2>
+						{{ form_set.management_form }}
+						{% for form in form_set %}
+							
+							<div class="mb-3 row formset-item ">
+								<div class="col-auto mb-3">
+									{{ form }}
+								</div> 
+								<div class="col-auto mb-3">
+									<button type="button" class="delete-item">Delete</button>
+								</div> 
+								<div style="color: red;" class="col-auto mb-3">{{ form.errors }}</div>
+							</div>
+							
+						{% endfor %}
 					</div>
+					<div id="totalDiv" style="text-align: center;"></div>
+					<button type="button" id="add-item">Add Item</button>
+				</div>
 					
 				{% endif %}
+			{% endfor %}
+
+			{% for field in form.hidden_fields %}
+				{{ field }}
 			{% endfor %}
 
 			
 
 
-		</table>
+		
 		<div style="text-align: center;">
 			<button class="btn btn-primary" type="submit">Save</button>
 		</div>
