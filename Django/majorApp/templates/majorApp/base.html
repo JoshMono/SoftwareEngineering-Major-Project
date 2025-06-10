@@ -16,7 +16,7 @@
         <link rel="icon" type="image/x-icon" href="{% static 'majorApp/images/TestFavicon.png' %}">
         
     </head>
-    <body class="BodyDiv">
+    <body class="BodyDiv d-flex flex-column min-vh-100">
         
       
     <header class="sticky-top">
@@ -59,11 +59,12 @@
         </nav>
       </header>
         
+      <div class="flex-grow-1">
             <!-- Main content -->
             {% block content %}
             
             {% endblock %}
-        
+      </div>
 
 
         <footer>

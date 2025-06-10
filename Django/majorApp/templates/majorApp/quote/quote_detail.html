@@ -29,6 +29,16 @@
                 </tr>
                 <tr>
                     <td>
+                        Items
+                    </td>
+                    <td>
+                        {% for item in quote.get_items%}
+                            <ul style="padding-left: 0px !important;">{{item}}</ul>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         Notes
                     </td>
                     <td>

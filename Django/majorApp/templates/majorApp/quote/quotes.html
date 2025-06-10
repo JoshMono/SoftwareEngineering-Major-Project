@@ -5,64 +5,86 @@
 {% block title %}Quotes{% endblock %}
 
 {% block content %}
+<div class="HeaderDiv">
+    <h1>Quotes</h1>
+</div>
 
-<h1>Quotes</h1>
 
 <div class="container" style="max-width: 90%;">
+    <div class="table-responsive">
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>
-                    Company    
-                </th>
-                <th>
-                    Status
-                </th>
-                <th>
-                    Notes
-                </th>
-                <th>
-                    Lead
-                </th>
-                <th>
-                    Contacts
-                </th>
-                <th>
-                    Last Contacted
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        {% for quote in quotes %}
-            <tr>
-                <td>
-                    {{quote.company}}    
-                </td>
-                <td>
-                    {{quote.get_status_display}}
-                </td>
-                <td>
-                    {{quote.notes}}
-                </td>
-                <td>
-                    {% if quote.lead %}
-                        <a href="{% url 'lead_detail' quote.lead.id %}">{{quote.lead}}</a>
-                    {% endif %}
-                </td>
-                <td>
-                    {{quote.get_contacts_string}}
-                </td>
-                <td>
-                    {{quote.last_contact_date}}
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-primary" href="{% url 'quote_detail' quote.id %}">View</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>
+                        Company    
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Items
+                    </th>
+                    <th>
+                        Notes
+                    </th>
+                    <th>
+                        Lead
+                    </th>
+                    <th>
+                        Contacts
+                    </th>
+                    <th>
+                        Last Contacted
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for quote in quotes %}
+                <tr>
+                    <td>
+                        {{quote.company}}    
+                    </td>
+                    <td>
+                        {{quote.get_status_display}}
+                    </td>
+                    <td>
+                        {% for item in quote.get_items%}
+                            <ul style="padding-left: 0px !important;">{{item}}</ul>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {{quote.notes}}
+                    </td>
+                    <td>
+                        {% if quote.lead %}
+                            <a href="{% url 'lead_detail' quote.lead.id %}">{{quote.lead}}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{quote.get_contacts_string}}
+                    </td>
+                    <td>
+                        {{quote.last_contact_date}}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" href="{% url 'quote_detail' quote.id %}">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
 
+            <tfoot class="table-secondary">
+                <tr>
+                    <td colspan="8" class="text-center fw-bold">
+                        <a href="{% url 'quote_create' %}" class="btn btn-sm btn-success">Add Quote</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
 </div>
 
 {% endblock %}

@@ -5,10 +5,12 @@
 {% block title %}Create Quote{% endblock %}
 
 {% block content %}
-<h1>{{create_edit}} Quote</h1>
-<h2>{{company}}</h2>
-<div class="container bg-light p-3 border justify-content-center align-items-center" style="margin-top: 50px; max-width: 1800px;">
-	<form method="post" class="row">
+<div class="HeaderDiv">
+	<h1>{{create_edit}} Quote</h1>
+	<h2>{{company}}</h2>
+</div>
+<div class="container  justify-content-center align-items-center" style="margin-top: 50px;">
+	<form method="post" class="p-4 border rounded shadow">
 		{% csrf_token %}
 
 		<table class="table">
@@ -23,13 +25,13 @@
 					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
 				</div>
 				{% if field.name == 'status' %}
-				<div>
-					<h5>Quote Items</h2>
-						<div id="item-forms" class="mb-3 row">
+				<div class="form-control mb-3 row">
+					<div id="item-forms" class=" ">
+							<h5>Quote Items</h2>
 							{{ form_set.management_form }}
 							{% for form in form_set %}
 								
-								<div class="mb-3 row formset-item">
+								<div class="mb-3 row formset-item ">
 									<div class="col-auto mb-3">
 										{{ form }}
 									</div> 
@@ -41,10 +43,10 @@
 								
 							{% endfor %}
 						</div>
+						<div id="totalDiv" style="text-align: center;"></div>
+						<button type="button" id="add-item">Add Item</button>
 					</div>
 					
-					<div id="totalDiv" style="text-align: center;"></div>
-					<button type="button" id="add-item">Add Item</button>
 				{% endif %}
 			{% endfor %}
 

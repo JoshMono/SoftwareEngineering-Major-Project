@@ -134,6 +134,9 @@ class Quote(models.Model):
     def get_contacts_string(self):
         contacts = self.contacts.all()
         return concatonate_list_of_strings_with_ampersand(contacts)
+    
+    def get_items(self):
+        return QuoteItem.objects.filter(quote=self)
 
 class QuoteItem(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
@@ -180,6 +183,9 @@ class Invoice(models.Model):
     def get_contacts_string(self):
         contacts = self.contacts.all()
         return concatonate_list_of_strings_with_ampersand(contacts)
+
+    def get_items(self):
+        return InvoiceItem.objects.filter(invoice=self)
 
     def get_amount_owing(self):
         
