@@ -394,7 +394,9 @@ def quote_create(request):
     firm_id = request.user.firm.id
     if request.method == "POST":
         form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.none())
-        form = CreateQuoteForm(request.POST, firm_id=firm_id)
+        company_id = request.POST.get("company")
+        company = Company.objects.get(id=company_id)
+        form = CreateQuoteForm(request.POST, firm_id=firm_id, company=company)
         
         if form.is_valid() and form_set.is_valid():
             quote_instance = form.save()
@@ -438,16 +440,11 @@ def quote_edit(request, quote_id):
         return HttpResponseForbidden("Permission Denied")
     
     if request.method == "POST":
-        company_id = request.POST.get("company")
         form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.filter(quote=quote))
-        form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
-        print("\n\n\n")
+        company_id = request.POST.get("company")
+        company = Company.objects.get(id=company_id)
+        form = CreateQuoteForm(request.POST, instance=quote, firm_id=firm.id, company=company)
         
-        query_set = Lead.objects.filter(company_id=company_id)
-
-        form.fields['lead'].queryset = query_set
-        print(form.fields)
-        print("\n\n\n\n\n")
         if form.is_valid() and form_set.is_valid():
             quote_instance = form.save()
             quote_items = form_set.save(commit=False)
@@ -457,7 +454,7 @@ def quote_edit(request, quote_id):
 
             return redirect('/dashboard') 
     else:     
-        form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
+        form = CreateQuoteForm(instance=quote, firm_id=user_firm_id, company=quote.company, edit=True)
         form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.filter(quote=quote).order_by("created_at"))
     
 

@@ -93,28 +93,6 @@
 			});
 		}
 
-		document.querySelector("[name='company']").addEventListener("DOMContentLoaded", function()  {
-			var companyId = this.value;
-			if (companyId){
-			console.log(companyId);
-			fetch(`/get_quotes/?company_id=` + companyId)
-				.then(response => response.json())
-				.then(data => {
-					var leadDropdown = document.querySelector("[name='lead']");
-					var option = document.createElement("option");
-					option.textContent = "---------"
-					option.value = ""
-					leadDropdown.innerHTML = "";
-					leadDropdown.appendChild(option)
-					data.leads.forEach(lead => {
-						var option = document.createElement("option");
-						option.value = lead.id;
-						option.textContent = lead.name;
-						leadDropdown.appendChild(option);
-					});
-				});
-			}
-		});
 
 
 		document.querySelector("[name='company']").addEventListener("change", function()  {

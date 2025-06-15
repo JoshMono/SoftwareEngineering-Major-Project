@@ -98,16 +98,21 @@ class CreateQuoteForm(ModelForm):
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
         company = kwargs.pop("company", None)
+        edit = kwargs.pop("edit", False)
         super().__init__(*args, **kwargs)
         if company:
-            self.fields['fake_company'] = ChoiceField()
-            self.fields['fake_company'].choices = ((1, company),)
-            self.fields['fake_company'].label = "Company" 
-            self.fields['company'].initial = company
-            self.fields['company'].widget = HiddenInput()
-            self.fields['lead'].queryset = Lead.objects.filter(company=company)
-            self.order_fields(["fake_company", "status", "notes", "lead", "last_contact_date", "contacts"])
-            
+            if not edit:
+                self.fields['fake_company'] = ChoiceField()
+                self.fields['fake_company'].choices = ((1, company),)
+                self.fields['fake_company'].label = "Company" 
+                self.fields['fake_company'].disabled = True
+                self.fields['fake_company'].required = False
+                self.fields['company'].initial = company
+                self.fields['company'].widget = HiddenInput()
+                self.fields['lead'].queryset = Lead.objects.filter(company=company)
+                self.order_fields(["fake_company", "status", "notes", "lead", "last_contact_date", "contacts"])
+            else:
+                self.fields['lead'].queryset = Lead.objects.filter(company=company)
         else:
             self.fields['lead'].queryset = Lead.objects.none()
 
