@@ -490,6 +490,14 @@ def quote_delete(request, quote_id):
 ###
 
 @login_required
+def get_invoices(request):
+    company_id = request.GET.get('company_id')
+    print(company_id)
+    quotes = Quote.objects.filter(company_id=company_id)
+    data = [{'id': quote.id, 'name': quote.__str__()} for quote in quotes]
+    return JsonResponse({"quotes": data}, safe=False)
+
+@login_required
 def invoices(request):
 
     firm_id = request.user.firm.id
@@ -522,8 +530,10 @@ def invoice_create(request):
     context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
-        form_set = CreateInvoiceItemFormSet(request.POST, queryset=Invoice.objects.none())
-        form = CreateInvoiceForm(request.POST, firm_id=firm_id)
+        form_set = CreateInvoiceItemFormSet(request.POST, queryset=InvoiceItem.objects.none())
+        company_id = request.POST.get("company")
+        company = Company.objects.get(id=company_id)
+        form = CreateInvoiceForm(request.POST, firm_id=firm_id, company=company)
         
         if form.is_valid() and form_set.is_valid():
             invoice_instance = form.save()
@@ -567,11 +577,10 @@ def invoice_edit(request, invoice_id):
         return HttpResponseForbidden("Permission Denied")
     
     if request.method == "POST":
-
         form_set = CreateInvoiceItemFormSet(request.POST, queryset=InvoiceItem.objects.filter(invoice=invoice))
-        form = CreateInvoiceForm(request.POST, instance=invoice, firm_id=user_firm_id)
-        print("\n\n\n\n\n")
-        print(form.fields['quote'].choices["queryset"])
+        company_id = request.POST.get("company")
+        company = Company.objects.get(id=company_id)
+        form = CreateInvoiceForm(request.POST, instance=invoice, firm_id=firm.id, company=company)
         if form.is_valid() and form_set.is_valid():
             invoice_instance = form.save()
             invoice_items = form_set.save(commit=False)
@@ -581,7 +590,7 @@ def invoice_edit(request, invoice_id):
 
         return redirect('/dashboard') 
     else:     
-        form = CreateInvoiceForm(instance=invoice, firm_id=user_firm_id)
+        form = CreateInvoiceForm(instance=invoice, firm_id=user_firm_id, company=invoice.company, edit=True)
         form_set = CreateInvoiceItemFormSet(queryset=InvoiceItem.objects.filter(invoice=invoice).order_by("created_at"))
     
 
