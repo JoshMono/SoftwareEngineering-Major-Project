@@ -107,9 +107,9 @@ class CreateQuoteForm(ModelForm):
             self.fields['company'].widget = HiddenInput()
             self.fields['lead'].queryset = Lead.objects.filter(company=company)
             self.order_fields(["fake_company", "status", "notes", "lead", "last_contact_date", "contacts"])
-
+            
         else:
-            self.fields['lead'].queryset = Lead.objects.filter(company__firm_id=firm_id)
+            self.fields['lead'].queryset = Lead.objects.none()
 
         self.fields['company'].queryset = Company.objects.filter(firm_id=firm_id)
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
@@ -174,6 +174,8 @@ class CreateContactForm(ModelForm):
         firm_id = kwargs.pop("firm_id", None) 
         company_id = kwargs.pop("company_id", None) 
         super().__init__(*args, **kwargs)
+        self.fields["first_name"].widget = TextInput()
+        self.fields["last_name"].widget = TextInput()
         if company_id:
             del self.fields["companies"]
         else:

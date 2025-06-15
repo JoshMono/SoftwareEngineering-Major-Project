@@ -38,6 +38,7 @@ urlpatterns = [
 
     ### Quotes
     path('quotes/', views.quotes, name='quotes'),
+    path('get_quotes/', views.get_quotes, name='get_quotes'),
     path('quote_create/', views.quote_create, name='quote_create'),
     path('quote_edit/<quote_id>', views.quote_edit, name='quote_edit'),
     path('quote_delete/<quote_id>', views.quote_delete, name='quote_delete'),

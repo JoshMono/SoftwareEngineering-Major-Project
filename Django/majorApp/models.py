@@ -58,8 +58,8 @@ class Company(models.Model):
 
 class Contact(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
-    first_name = models.TextField(blank=True)
-    last_name = models.TextField(blank=True)
+    first_name = models.TextField(blank=True, max_length=20)
+    last_name = models.TextField(blank=True, max_length=20)
     email = models.EmailField(null=True, blank=True)
     phone_number = PhoneNumberField(null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)

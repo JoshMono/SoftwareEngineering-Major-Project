@@ -67,6 +67,10 @@
 
 <script>
 
+	
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
         let itemFormsContainer = document.querySelector('#item-forms');
         let addAuthorBtn = document.querySelector('#add-item');
@@ -79,6 +83,7 @@
 		updateTotal();
 		updateDeleteButtons();
 
+
 		function refreshPriceListener() {
 			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");
 			
@@ -87,6 +92,53 @@
 				element.addEventListener('keyup', updateTotal)
 			});
 		}
+
+		document.querySelector("[name='company']").addEventListener("DOMContentLoaded", function()  {
+			var companyId = this.value;
+			if (companyId){
+			console.log(companyId);
+			fetch(`/get_quotes/?company_id=` + companyId)
+				.then(response => response.json())
+				.then(data => {
+					var leadDropdown = document.querySelector("[name='lead']");
+					var option = document.createElement("option");
+					option.textContent = "---------"
+					option.value = ""
+					leadDropdown.innerHTML = "";
+					leadDropdown.appendChild(option)
+					data.leads.forEach(lead => {
+						var option = document.createElement("option");
+						option.value = lead.id;
+						option.textContent = lead.name;
+						leadDropdown.appendChild(option);
+					});
+				});
+			}
+		});
+
+
+		document.querySelector("[name='company']").addEventListener("change", function()  {
+			var companyId = this.value;
+			console.log(companyId);
+			fetch(`/get_quotes/?company_id=` + companyId)
+				.then(response => response.json())
+				.then(data => {
+					var leadDropdown = document.querySelector("[name='lead']");
+					var option = document.createElement("option");
+					option.textContent = "---------"
+					option.value = ""
+					leadDropdown.innerHTML = "";
+					leadDropdown.appendChild(option)
+					data.leads.forEach(lead => {
+						var option = document.createElement("option");
+						option.value = lead.id;
+						option.textContent = lead.name;
+						leadDropdown.appendChild(option);
+					});
+				});
+		});
+
+	
 
 		function updateTotal() {
 			let price_inputs = document.querySelectorAll("input[type='number'][name*='price']");

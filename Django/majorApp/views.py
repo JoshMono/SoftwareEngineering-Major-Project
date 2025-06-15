@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Firm, Company, Lead, Quote, Invoice, Contact, QuoteItem, InvoiceItem
-from .forms import CreateCompanyForm, CreateFirmForm, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
+from .forms import CreateCompanyForm, CreateFirmForm, ModelChoiceField, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
 from .logic import file_management
 
 from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet, CreateQuoteItemForm, CreateInvoiceItemFormSet
 from allauth.account.views import SignupView
+
 
 
 class CustomSignupView(SignupView):
@@ -209,8 +210,9 @@ def contact_create(request):
             firm = request.user.firm
             form.instance.firm = firm 
             instance = form.save()
-            instance.companies.add(Company.objects.get(id=company_id))  
+
             if company_id:
+                instance.companies.add(Company.objects.get(id=company_id))  
                 return redirect("company_detail", company_id=company_id)
 
             return redirect("contacts")
@@ -350,6 +352,14 @@ def lead_delete(request, lead_id):
 ###
 ### Quote Views
 ###
+@login_required
+def get_quotes(request):
+    company_id = request.GET.get('company_id')
+    print(company_id)
+    leads = Lead.objects.filter(company_id=company_id)
+    data = [{'id': lead.id, 'name': lead.__str__()} for lead in leads]
+    return JsonResponse({"leads": data}, safe=False)
+
 
 @login_required
 def quotes(request):
@@ -428,10 +438,16 @@ def quote_edit(request, quote_id):
         return HttpResponseForbidden("Permission Denied")
     
     if request.method == "POST":
-
+        company_id = request.POST.get("company")
         form_set = CreateQuoteItemFormSet(request.POST, queryset=QuoteItem.objects.filter(quote=quote))
         form = CreateQuoteForm(request.POST, instance=quote, firm_id=user_firm_id)
+        print("\n\n\n")
         
+        query_set = Lead.objects.filter(company_id=company_id)
+
+        form.fields['lead'].queryset = query_set
+        print(form.fields)
+        print("\n\n\n\n\n")
         if form.is_valid() and form_set.is_valid():
             quote_instance = form.save()
             quote_items = form_set.save(commit=False)
@@ -439,7 +455,7 @@ def quote_edit(request, quote_id):
                 quote_item.quote = quote_instance
             form_set.save()
 
-        return redirect('/dashboard') 
+            return redirect('/dashboard') 
     else:     
         form = CreateQuoteForm(instance=quote, firm_id=user_firm_id)
         form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.filter(quote=quote).order_by("created_at"))
@@ -557,7 +573,8 @@ def invoice_edit(request, invoice_id):
 
         form_set = CreateInvoiceItemFormSet(request.POST, queryset=InvoiceItem.objects.filter(invoice=invoice))
         form = CreateInvoiceForm(request.POST, instance=invoice, firm_id=user_firm_id)
-        
+        print("\n\n\n\n\n")
+        print(form.fields['quote'].choices["queryset"])
         if form.is_valid() and form_set.is_valid():
             invoice_instance = form.save()
             invoice_items = form_set.save(commit=False)
