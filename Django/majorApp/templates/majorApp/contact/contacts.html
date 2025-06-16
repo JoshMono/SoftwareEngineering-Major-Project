@@ -1,7 +1,6 @@
 {% extends 'majorApp/base.html' %}
 {% load static %}
 
-
 {% block title %}Contacts{% endblock %}
 
 {% block content %}
@@ -12,52 +11,34 @@
 
 <div class="container" style="max-width: 90%;">
 
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="table-dark">
+    <table class="table table-striped table-bordered table-hover" style="table-layout: fixed; width: 100%;">
+        <thead class="table-dark" style="display: table; width: 100%; table-layout: fixed;">
             <tr>
-                <th>
-                    First Name    
-                </th>
-                <th>
-                    Last Name
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    Phone Number
-                </th>
-                <th>
-                    Companies
-                </th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Companies</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+
+        <tbody style="display: block; max-height: 600px; overflow-y: auto; width: 100%;">
         {% for contact in contacts %}
-            <tr>
-                <td>
-                    {{contact.first_name}}    
-                </td>
-                <td>
-                    {{contact.last_name}}
-                </td>
-                <td>
-                    {{contact.email}}
-                </td>
-                <td>
-                    {{contact.phone_number}}
-                </td>
-                <td>
-                    {{contact.get_companies}}
-                </td>
+            <tr style="display: table; table-layout: fixed; width: 100%;">
+                <td>{{ contact.first_name }}</td>
+                <td>{{ contact.last_name }}</td>
+                <td>{{ contact.email }}</td>
+                <td>{{ contact.phone_number }}</td>
+                <td>{{ contact.get_companies }}</td>
                 <td>
                     <a class="btn btn-sm btn-primary" href="{% url 'contact_detail' contact.id %}">View</a>
                 </td>
             </tr>
-            {% endfor %}
+        {% endfor %}
         </tbody>
-        <tfoot class="table-secondary">
+
+        <tfoot class="table-secondary" style="display: table; width: 100%; table-layout: fixed;">
             <tr>
                 <td colspan="6" class="text-center fw-bold">
                     <a href="{% url 'contact_create' %}" class="btn btn-sm btn-success">Add Contact</a>

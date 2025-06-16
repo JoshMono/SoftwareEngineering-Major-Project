@@ -34,14 +34,16 @@
                     </tr>
                     <tr class="Items">
                         <td >
-                            <ul>
-                                {% for lead in leads %}
-                                    <li style="margin-bottom: 10px;">
-                                        <a  href="{% url 'lead_detail' lead.id %}" class="Item-A-Tag">{{lead}}</a>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container h-100">
+                                <ul>
+                                    {% for lead in leads %}
+                                        <li style="margin-bottom: 10px;">
+                                            <a  href="{% url 'lead_detail' lead.id %}" class="Item-A-Tag">{{lead}}</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     
@@ -73,14 +75,16 @@
                     </tr>
                     <tr class="Items">
                         <td >
-                            <ul>
-                                {% for quote in quotes %}
-                                    <li style="margin-bottom: 10px;">
-                                        <a  href="{% url 'quote_detail' quote.id %}" class="Item-A-Tag">{{quote}}</a>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container h-100">
+                                <ul>
+                                    {% for quote in quotes %}
+                                        <li style="margin-bottom: 10px;">
+                                            <a  href="{% url 'quote_detail' quote.id %}" class="Item-A-Tag">{{quote}}</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     
@@ -111,14 +115,16 @@
                     </tr>
                     <tr class="Items">
                         <td >
-                            <ul>
-                                {% for invoice in invoices %}
-                                    <li style="margin-bottom: 10px;">
-                                        <a  href="{% url 'invoice_detail' invoice.id %}" class="Item-A-Tag">{{invoice}}</a>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container h-100">
+                                <ul>
+                                    {% for invoice in invoices %}
+                                        <li style="margin-bottom: 10px;">
+                                            <a  href="{% url 'invoice_detail' invoice.id %}" class="Item-A-Tag">{{invoice}}</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     
@@ -150,14 +156,16 @@
                     </tr>
                     <tr class="Items">
                         <td >
-                            <ul>
-                                {% for contact in contacts %}
-                                    <li style="margin-bottom: 10px;">
-                                        <a  href="{% url 'contact_detail' contact.id %}" class="Item-A-Tag">{{contact}}</a>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container h-100">
+                                <ul>
+                                    {% for contact in contacts %}
+                                        <li style="margin-bottom: 10px;">
+                                            <a  href="{% url 'contact_detail' contact.id %}" class="Item-A-Tag">{{contact}}</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     

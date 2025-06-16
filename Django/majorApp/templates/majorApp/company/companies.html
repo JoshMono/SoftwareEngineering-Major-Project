@@ -1,7 +1,6 @@
 {% extends 'majorApp/base.html' %}
 {% load static %}
 
-
 {% block title %}Companies{% endblock %}
 
 {% block content %}
@@ -11,52 +10,32 @@
 
 <div class="container" style="max-width: 90%;">
 
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="table-dark">
+    <table class="table table-striped table-bordered table-hover" style="table-layout: fixed; width: 100%;">
+        <thead class="table-dark" style="display: table; width: 100%; table-layout: fixed;">
             <tr>
-                <th>
-                    Name    
-                </th>
-                <th>
-                    Address
-                </th>
-                <th>
-                    Contacts
-                </th>
-                <th>
-                    Open Leads
-                </th>
-                <th>
-                    Unpaid Invoices
-                </th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Contacts</th>
+                <th>Open Leads</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-        {% for company in companies %}
-            <tr>
-                <td>
-                    {{company.name}}    
-                </td>
-                <td>
-                    {{company.address}}
-                </td>
-                <td>
-                    {{company.get_contacts_string}}
-                </td>
-                <td>
-                    {{company.get_open_leads_count}}
-                </td>
-                <td>
-                    {{company.get_unpaid_invoices_count}}
-                </td>
+
+        <tbody style="display: block; max-height: 600px; overflow-y: auto; width: 100%;">
+            {% for company in companies %}
+            <tr style="display: table; table-layout: fixed; width: 100%;">
+                <td>{{ company.name }}</td>
+                <td>{{ company.address }}</td>
+                <td>{{ company.get_contacts_string }}</td>
+                <td>{{ company.get_open_leads_count }}</td>
                 <td>
                     <a class="btn btn-sm btn-primary" href="{% url 'company_detail' company.id %}">View</a>
                 </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
-        <tfoot class="table-secondary">
+
+        <tfoot class="table-secondary" style="display: table; width: 100%; table-layout: fixed;">
             <tr>
                 <td colspan="6" class="text-center fw-bold">
                     <a href="{% url 'company_create' %}" class="btn btn-sm btn-success">Add Company</a>

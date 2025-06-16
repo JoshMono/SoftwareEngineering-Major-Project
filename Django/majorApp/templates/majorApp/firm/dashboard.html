@@ -37,7 +37,7 @@
                     </tr>
                     <tr class="Items ">
                         <td>
-                            <div >
+                            <div class="scroll-container h-100">
                                 <ul>
                                     {% for lead in leads %}
                                         <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
@@ -62,7 +62,7 @@
         
         </div>
         <div class="col">
-            <table class="table w-100 TableItems">
+            <table class="table w-100 TableItems" style="table-layout: fixed;">
                 <thead>
 
                     <tr>
@@ -79,14 +79,16 @@
                     </tr>
                     <tr class="Items">
                         <td >
-                            <ul>
-                                {% for quote in quotes %}
-                                    <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
-                                        <a class="Item-A-Tag" href="{% url 'quote_detail' quote.id %}">{{quote}}</a>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container h-100">
+                                <ul>
+                                    {% for quote in quotes %}
+                                        <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
+                                            <a class="Item-A-Tag" href="{% url 'quote_detail' quote.id %}">{{quote}}</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     
@@ -117,14 +119,16 @@
                     </tr>
                     <tr class="Items">
                         <td >
-                            <ul>
-                                {% for invoice in invoices %}
-                                    <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
-                                        <a class="Item-A-Tag" href="{% url 'invoice_detail' invoice.id %}">{{invoice}}</a>
-                                    </li>
-                                    
-                                {% endfor %}
-                            </ul> 
+                            <div class="scroll-container">
+                                <ul>
+                                    {% for invoice in invoices %}
+                                        <li style="margin-bottom: 10px; border-bottom: 1px gray solid;">
+                                            <a class="Item-A-Tag" href="{% url 'invoice_detail' invoice.id %}">{{invoice}}</a>
+                                        </li>
+                                        
+                                    {% endfor %}
+                                </ul> 
+                            </div>
                         </td>
                     </tr>
                     

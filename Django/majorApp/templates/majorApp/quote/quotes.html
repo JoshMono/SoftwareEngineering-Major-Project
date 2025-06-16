@@ -13,76 +13,57 @@
 <div class="container" style="max-width: 90%;">
     <div class="table-responsive">
 
-        <table class="table table-striped table-bordered table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>
-                        Company    
-                    </th>
-                    <th>
-                        Status
-                    </th>
-                    <th>
-                        Items
-                    </th>
-                    <th>
-                        Notes
-                    </th>
-                    <th>
-                        Lead
-                    </th>
-                    <th>
-                        Contacts
-                    </th>
-                    <th>
-                        Last Contacted
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for quote in quotes %}
-                <tr>
-                    <td>
-                        {{quote.company}}    
-                    </td>
-                    <td>
-                        {{quote.get_status_display}}
-                    </td>
-                    <td>
-                        {% for item in quote.get_items%}
-                            <ul style="padding-left: 0px !important;">{{item}}</ul>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        {{quote.notes}}
-                    </td>
-                    <td>
-                        {% if quote.lead %}
-                            <a href="{% url 'lead_detail' quote.lead.id %}">{{quote.lead}}</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {{quote.get_contacts_string}}
-                    </td>
-                    <td>
-                        {{quote.last_contact_date}}
-                    </td>
-                    <td>
-                        <a class="btn btn-sm btn-primary" href="{% url 'quote_detail' quote.id %}">View</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+        <table class="table table-striped table-bordered table-hover" style="table-layout: fixed; width: 100%;">
+    <thead class="table-dark" style="display: table; width: 100%; table-layout: fixed;">
+        <tr>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Items</th>
+            <th>Notes</th>
+            <th>Lead</th>
+            <th>Contacts</th>
+            <th>Last Contacted</th>
+            <th></th>
+        </tr>
+    </thead>
 
-            <tfoot class="table-secondary">
-                <tr>
-                    <td colspan="8" class="text-center fw-bold">
-                        <a href="{% url 'quote_create' %}" class="btn btn-sm btn-success">Add Quote</a>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+    <tbody style="display: block; max-height: 600px; overflow-y: auto; width: 100%;">
+        {% for quote in quotes %}
+        <tr style="display: table; table-layout: fixed; width: 100%;">
+            <td>{{ quote.company }}</td>
+            <td>{{ quote.get_status_display }}</td>
+            <td>
+                <ul style="padding-left: 0px; list-style: none; margin-bottom: 0;">
+                    {% for item in quote.get_items %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            <td>{{ quote.notes }}</td>
+            <td>
+                {% if quote.lead %}
+                    <a href="{% url 'lead_detail' quote.lead.id %}">{{ quote.lead }}</a>
+                {% endif %}
+            </td>
+            <td>{{ quote.get_contacts_string }}</td>
+            <td>{{ quote.last_contact_date }}</td>
+            <td>
+                <a class="btn btn-sm btn-primary" href="{% url 'quote_detail' quote.id %}" style="margin-right: 10px;">View</a>
+                <a class="btn btn-sm btn-warning" href="{% url 'quote_pdf' quote.id %}">Report</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <tfoot class="table-secondary" style="display: table; width: 100%; table-layout: fixed;">
+        <tr>
+            <td colspan="8" class="text-center fw-bold">
+                <a href="{% url 'quote_create' %}" class="btn btn-sm btn-success">Add Quote</a>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
 
     </div>
 </div>

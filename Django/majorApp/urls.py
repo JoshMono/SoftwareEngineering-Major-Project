@@ -38,6 +38,7 @@ urlpatterns = [
 
     ### Quotes
     path('quotes/', views.quotes, name='quotes'),
+    path('quote_pdf/<quote_id>', views.quote_pdf, name='quote_pdf'),
     path('get_quotes/', views.get_quotes, name='get_quotes'),
     path('quote_create/', views.quote_create, name='quote_create'),
     path('quote_edit/<quote_id>', views.quote_edit, name='quote_edit'),
@@ -46,6 +47,7 @@ urlpatterns = [
 
     ### Invoices
     path('invoices/', views.invoices, name='invoices'),
+    path('invoice_pdf/<invoice_id>', views.invoice_pdf, name='invoice_pdf'),
     path('get_invoices/', views.get_invoices, name='get_invoices'),
     path('invoice_create/', views.invoice_create, name='invoice_create'),
     path('invoice_edit/<invoice_id>', views.invoice_edit, name='invoice_edit'),

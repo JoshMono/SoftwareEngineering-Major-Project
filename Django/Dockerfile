@@ -23,5 +23,7 @@ RUN rm -f requirements.txt
 
 # RUN python manage.py collectstatic --noinput
 # RUN chmod -R 755 /code/staticfiles
+RUN apt -yq install libpango-1.0-0 libgdk-pixbuf2.0-0 libcairo2
+RUN apt -yq install weasyprint
 
 USER django

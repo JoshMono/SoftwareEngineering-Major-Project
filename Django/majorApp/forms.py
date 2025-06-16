@@ -24,13 +24,14 @@ class CreateFirmForm(ModelForm):
 class CreateCompanyForm(ModelForm):
     class Meta:
         model = Company
-        fields = ["name", "address", "contacts"]
+        fields = ["name", "address", "contacts", "industry"]
 
     def __init__(self, *args, **kwargs):
         firm_id = kwargs.pop("firm_id", None)
         super().__init__(*args, **kwargs)
         self.fields['name'].widget = TextInput()
         self.fields['address'].widget = TextInput()
+        self.fields['industry'].widget = TextInput()
         self.fields['contacts'].queryset = Contact.objects.filter(firm_id=firm_id)
         
 
@@ -70,6 +71,7 @@ class CreateQuoteItemForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['description'].required = True
         self.fields['description'].widget = TextInput()
         self.fields['description'].required = True
         self.fields['price'].required = True
@@ -187,6 +189,7 @@ class CreateContactForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["first_name"].widget = TextInput()
         self.fields["last_name"].widget = TextInput()
+        self.fields["phone_number"].widget = TextInput()
         if company_id:
             del self.fields["companies"]
         else:

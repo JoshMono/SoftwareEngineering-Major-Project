@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
 from django.db.models import Q
 from .models import Firm, Company, Lead, Quote, Invoice, Contact, QuoteItem, InvoiceItem
 from .forms import CreateCompanyForm, CreateFirmForm, ModelChoiceField, CreateQuoteForm, CreateInvoiceForm, CreateContactForm
 from .logic import file_management
+from weasyprint import HTML, CSS
 
 from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet, CreateQuoteItemForm, CreateInvoiceItemFormSet
 from allauth.account.views import SignupView
@@ -30,7 +32,6 @@ def dashboard(request):
             return redirect("/create_firm")
         
         firm_id = request.user.firm.id
-
         context = {}
 
         firm = Firm.objects.get(id=firm_id)
@@ -243,8 +244,8 @@ def contact_edit(request, contact_id):
     return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Edit"})
 
 @login_required
-def contact_delete(request, invoice_id):
-    contact = Contact.objects.get(id=invoice_id)
+def contact_delete(request, contact_id):
+    contact = Contact.objects.get(id=contact_id)
     firm = contact.get_firm()
     user_firm_id = request.user.firm.id
     if firm.id != user_firm_id:
@@ -360,6 +361,25 @@ def get_quotes(request):
     data = [{'id': lead.id, 'name': lead.__str__()} for lead in leads]
     return JsonResponse({"leads": data}, safe=False)
 
+@login_required
+def quote_pdf(request, quote_id):
+    quote = Quote.objects.get(id=quote_id)
+    firm = request.user.firm
+    html_string  = render_to_string('majorApp/quote/pdf_template.html', {
+        'quote': quote,
+        'firm': firm,
+    })
+
+   
+
+    html = HTML(string=html_string)
+    result = html.write_pdf()
+    
+
+    response = HttpResponse(result, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=quote_{quote.id}.pdf'
+    return response
+
 
 @login_required
 def quotes(request):
@@ -399,11 +419,15 @@ def quote_create(request):
         form = CreateQuoteForm(request.POST, firm_id=firm_id, company=company)
         
         if form.is_valid() and form_set.is_valid():
-            quote_instance = form.save()
+            quote_instance = form.save(commit=False)
             quote_items = form_set.save(commit=False)
             for quote_item in quote_items:
                 quote_item.quote = quote_instance
                 quote_item.save()
+            request.user.firm.quote_index += 1
+            request.user.firm.save()
+            quote_instance.quote_index = request.user.firm.quote_index
+            quote_instance.save()
 
 
             if request.GET.get("company_id"):
@@ -498,6 +522,26 @@ def get_invoices(request):
     return JsonResponse({"quotes": data}, safe=False)
 
 @login_required
+def invoice_pdf(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id)
+    firm = request.user.firm
+    html_string  = render_to_string('majorApp/invoice/pdf_template.html', {
+        'invoice': invoice,
+        'firm': firm,
+    })
+
+   
+
+    html = HTML(string=html_string)
+    result = html.write_pdf()
+    
+
+    response = HttpResponse(result, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=invoice_{invoice.id}.pdf'
+    return response
+
+
+@login_required
 def invoices(request):
 
     firm_id = request.user.firm.id
@@ -536,11 +580,15 @@ def invoice_create(request):
         form = CreateInvoiceForm(request.POST, firm_id=firm_id, company=company)
         
         if form.is_valid() and form_set.is_valid():
-            invoice_instance = form.save()
+            invoice_instance = form.save(commit=False)
             invoice_items = form_set.save(commit=False)
             for invoice_item in invoice_items:
                 invoice_item.invoice = invoice_instance
                 invoice_item.save()
+            request.user.firm.invoice_index += 1
+            request.user.firm.save()
+            invoice_instance.invoice_index = request.user.firm.invoice_index
+            invoice_instance.save()
 
 
             if request.GET.get("company_id"):

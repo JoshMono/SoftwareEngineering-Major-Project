@@ -11,7 +11,7 @@ from .utils import concatonate_list_of_strings_with_ampersand
 class CustomUser(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     dob = models.DateField(null=True, blank=True)
-    phone_number = PhoneNumberField(null=True, blank=True,)
+    phone_number = PhoneNumberField(region="AU", null=True, blank=True,)
     mfa_secret_key = models.CharField(null=True, blank=True, max_length=16) 
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE, null=True, blank=True)
 
@@ -22,7 +22,9 @@ class Firm(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.TextField()
     email = models.EmailField(null=True, blank=True)
-    phone_number = PhoneNumberField(null=True, blank=True)
+    phone_number = PhoneNumberField(region="AU", null=True, blank=True)
+    quote_index = models.SmallIntegerField(default=0)
+    invoice_index = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -31,6 +33,7 @@ class Company(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     name = models.TextField()
     address = models.TextField(null=True, blank=True)
+    industry = models.TextField(null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)
     contacts = models.ManyToManyField("majorApp.Contact", related_name='companies', null=True, blank=True)
 
@@ -61,7 +64,7 @@ class Contact(models.Model):
     first_name = models.TextField(blank=True, max_length=20)
     last_name = models.TextField(blank=True, max_length=20)
     email = models.EmailField(null=True, blank=True)
-    phone_number = PhoneNumberField(null=True, blank=True)
+    phone_number = PhoneNumberField(region="AU", null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)
 
     def __str__(self):
@@ -117,6 +120,7 @@ class Quote(models.Model):
     notes = models.TextField(blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)
     last_contact_date = models.DateField(default=datetime.date.today(), null=True, blank=True)
+    quote_index = models.SmallIntegerField()
 
     def __str__(self):
         return f"{self.company} - ${self.get_total_price()}"
@@ -166,6 +170,7 @@ class Invoice(models.Model):
     notes = models.TextField(blank=True)
     contacts = models.ManyToManyField(Contact, null=True, blank=True)
     last_contact_date = models.DateField(default=datetime.date.today(), null=True, blank=True)
+    invoice_index = models.SmallIntegerField()
 
     def __str__(self):
         return f"{self.company} - ${self.get_total_price()}"
@@ -187,11 +192,6 @@ class Invoice(models.Model):
     def get_items(self):
         return InvoiceItem.objects.filter(invoice=self)
 
-    def get_amount_owing(self):
-        
-        # todo
-
-        return 999
 
 class InvoiceItem(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)

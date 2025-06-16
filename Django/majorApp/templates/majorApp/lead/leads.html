@@ -1,7 +1,6 @@
 {% extends 'majorApp/base.html' %}
 {% load static %}
 
-
 {% block title %}Leads{% endblock %}
 
 {% block content %}
@@ -11,60 +10,38 @@
 
 <div class="container" style="max-width: 90%;">
 
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="table-dark">
+    <table class="table table-striped table-bordered table-hover" style="table-layout: fixed; width: 100%;">
+        <thead class="table-dark" style="display: table; width: 100%; table-layout: fixed;">
             <tr>
-                <th>
-                    Company    
-                </th>
-                <th>
-                    Status
-                </th>
-                <th>
-                    Notes
-                </th>
-                <th>
-                    Estimated Value
-                </th>
-                <th>
-                    Contacts
-                </th>
-                <th>
-                    Last Contacted
-                </th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Notes</th>
+                <th>Estimated Value</th>
+                <th>Contacts</th>
+                <th>Last Contacted</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-        {% for lead in leads %}
-            <tr>
-                <td>
-                    {{lead.company}}    
-                </td>
-                <td>
-                    {{lead.get_status_display}}
-                </td>
-                <td>
-                    {{lead.notes}}
-                </td>
-                <td>
-                    ${{lead.estimated_value}}
-                </td>
-                <td>
-                    {{lead.get_contacts_string}}
-                </td>
-                <td>
-                    {{lead.last_contact_date}}
-                </td>
+
+        <tbody style="display: block; max-height: 600px; overflow-y: auto; width: 100%;">
+            {% for lead in leads %}
+            <tr style="display: table; table-layout: fixed; width: 100%;">
+                <td>{{ lead.company }}</td>
+                <td>{{ lead.get_status_display }}</td>
+                <td>{{ lead.notes }}</td>
+                <td>${{ lead.estimated_value }}</td>
+                <td>{{ lead.get_contacts_string }}</td>
+                <td>{{ lead.last_contact_date }}</td>
                 <td>
                     <a class="btn btn-sm btn-primary" href="{% url 'lead_detail' lead.id %}">View</a>
                 </td>
             </tr>
-        {% endfor %}
+            {% endfor %}
         </tbody>
-        <tfoot class="table-secondary">
+
+        <tfoot class="table-secondary" style="display: table; width: 100%; table-layout: fixed;">
             <tr>
-                <td colspan="8" class="text-center fw-bold">
+                <td colspan="7" class="text-center fw-bold">
                     <a href="{% url 'lead_create' %}" class="btn btn-sm btn-success">Add Lead</a>
                 </td>
             </tr>
@@ -72,5 +49,4 @@
     </table>
 
 </div>
-
 {% endblock %}
