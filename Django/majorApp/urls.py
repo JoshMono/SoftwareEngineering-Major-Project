@@ -2,16 +2,25 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from allauth.account.views import LoginView, SignupView
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('dashboard', views.dashboard, name='dashboard'),
 
-    ### Login/Signup
+    ### Account
+     path('accounts/password/reset/', auth_views.PasswordResetView.as_view(template_name='accounts/password_reset.html'), name='account_reset_password'),
+     path('accounts/password/done/', auth_views.PasswordResetDoneView.as_view(template_name='accounts/password_reset_done.html'), name='password_reset_done'),
+     path('accounts/password/reset/key/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='accounts/password_reset_confirm.html'), name='password_reset_confirm'),
+     path('accounts/password/reset/key/done/', views.landing_page, name='password_reset_complete'),
+     
+    path("accounts/landing_page/", views.landing_page, name="landing_page"),
     path("accounts/signup/", views.CustomSignupView.as_view(), name="account_signup"),
+    path("accounts/login/", views.CustomLoginView.as_view(), name="account_login"),
 
     path('create_firm/', views.create_firm, name='create_firm'),
+    path('edit_firm/', views.edit_firm, name='edit_firm'),
 
     ### Companies
     path('company/<company_id>', views.company_detail, name='company_detail'),

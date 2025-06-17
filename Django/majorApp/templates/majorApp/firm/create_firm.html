@@ -1,13 +1,31 @@
-
+{% extends 'majorApp/base.html' %}
 {% load static %}
 
 
-<html>
-    
-    <form method="post">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit">Save</button>
-    </form>
+{% block title %}{{create_edit}} Firm{% endblock %}
 
-</html>
+{% block content %}
+<div class="HeaderDiv">
+    <h1>{{create_edit}} Firm</h1>
+</div>
+<div class="container justify-content-center align-items-center" style="margin-top: 50px;">
+	<form method="post" class="p-4 border rounded shadow Create-Form">
+		{% csrf_token %}
+
+		{% for field in form %}
+
+				<div class=" row">
+					<div class="col-auto mb-3 form-control">
+						{{ field.label_tag }}
+						{{ field }}
+					</div> 
+					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
+				</div>
+
+		{% endfor %}
+		<div style="text-align: center;">
+			<button class="btn btn-primary" type="submit">Save</button>
+		</div>
+	</form>
+</div>
+{% endblock %}

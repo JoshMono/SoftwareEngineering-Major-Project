@@ -49,7 +49,7 @@
             <td>{{ quote.last_contact_date }}</td>
             <td>
                 <a class="btn btn-sm btn-primary" href="{% url 'quote_detail' quote.id %}" style="margin-right: 10px;">View</a>
-                <a class="btn btn-sm btn-warning" href="{% url 'quote_pdf' quote.id %}">Report</a>
+                <a class="btn btn-sm btn-info" href="{% url 'quote_pdf' quote.id %}">Report</a>
             </td>
         </tr>
         {% endfor %}

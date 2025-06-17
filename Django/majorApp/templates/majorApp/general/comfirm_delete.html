@@ -2,12 +2,20 @@
 {% load static %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center" style="margin-top: 50px">
+<div class="container mt-5" style="max-width: 700px;">
+ <div class="HeaderDiv">
+        <h1 class="mb-0">Delete</h1>
+    </div>
+
+    <div class="bg-light p-5 rounded shadow-sm" style="min-height: 300px;">
         <h1 >Are you sure you want to delete {{object}}?</h1>
         <form method="post">
             {% csrf_token %}
-            <button class="btn btn-danger" type="submit">Confirm</button>
-            <a class="btn btn-secondary" href="{% url 'dashboard' %}">Cancel</a>
+            <div class="d-flex justify-content-center mt-5">
+                <button class="btn btn-danger m-3" type="submit">Confirm</button>
+                <a class="btn btn-secondary m-3" href="{% url 'dashboard' %}">Cancel</a>
+            </div>
         </form>
     </div>
+</div>
 {% endblock %}

@@ -2,10 +2,12 @@
 {% load static %}
 
 
-{% block title %}Create Contact{% endblock %}
+{% block title %}{{create_edit}} Contact{% endblock %}
 
 {% block content %}
-<h1>{{create_edit}} Contact</h1>
+<div class="HeaderDiv">
+	<h1>{{create_edit}} Contact</h1>
+</div>
 <div class="container justify-content-center align-items-center" style="margin-top: 50px;">
 	<form method="post" class="p-4 border rounded shadow Create-Form">
 		{% csrf_token %}

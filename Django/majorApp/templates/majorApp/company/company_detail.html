@@ -10,7 +10,10 @@
 <div class="HeaderDiv">
 
     <h1>{{company}}</h1>
-
+    <div>
+        <a href="{% url 'company_edit' company.id %}" class="btn btn-sm btn-warning">Edit {{company}}</a>
+        <a href="{% url 'company_delete' company.id %}" class="btn btn-sm btn-danger">Delete {{company}}</a>
+    </div>
 </div>
 
 <div class="container-fluid" >

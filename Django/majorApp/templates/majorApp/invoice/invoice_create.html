@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block title %}Create Invoice{% endblock %}
+{% block title %}{{create_edit}} Invoice{% endblock %}
 
 {% block content %}
 
@@ -30,18 +30,38 @@
 							<h5>Invoice Items</h2>
 							{{ form_set.management_form }}
 							{% for form in form_set %}
-								
-								<div class="mb-3 row formset-item ">
-									<div class="col-auto mb-3">
-										{{ form }}
-									</div> 
-									<div class="col-auto mb-3">
-										<button type="button" class="delete-item">Delete</button>
-									</div> 
-									<div style="color: red;" class="col-auto mb-3">{{ form.errors }}</div>
-								</div>
-								
-							{% endfor %}
+							
+							<div class="mb-3 row formset-item ">
+								<div class="col-auto mb-3">
+									<div class="row">
+										{% for field in form.visible_fields %}
+											{% if field.name == "DELETE" %}
+												<div style="display: None;">
+													{{ field.label_tag }}
+													{{ field }}
+												</div>
+											{% else %}
+												<div class="col-3 mb-2">
+													{{field.label_tag}}
+												</div>
+												<div class="col-9 mb-2">
+													{{field}}
+												</div>
+											{% endif %}
+										{% endfor %}
+										<div class="col-6 mb-1">
+											<button type="button" class="delete-item btn btn-sm btn-danger">Delete</button>
+										</div> 
+										{% for field in form.hidden_fields %}
+											<div style="display: none;">{{ field }}</div>
+										{% endfor %}
+
+									</div>
+								</div> 
+								<div style="color: red;" class="col-auto mb-3">{{ form.errors }}</div>
+							</div>
+							
+						{% endfor %}
 						</div>
 						<div id="totalDiv" style="text-align: center;"></div>
 						<button type="button" id="add-item">Add Item</button>
@@ -141,7 +161,8 @@
 			
 						<div class="mb-3 row formset-item">
 
-							<div class="col-auto mb-3 class="form-control"">
+							<div class="col-auto mb-3">
+								<div class="row">
 								{% for field in form_set.empty_form.visible_fields %}
 									{% if field.name == "DELETE" %}
 										<div style="display: None;">
@@ -149,17 +170,20 @@
 											{{ field }}
 										</div>
 									{% else %}
-										<div >
-											{{ field.label_tag }}
-											{{ field }}
+										<div class="col-3 mb-2">
+											{{field.label_tag}}
+										</div>
+										<div class="col-9 mb-2">
+											{{field}}
 										</div>
 									{% endif %}
 									{% endfor %}
+									<div class="col-6 mb-1">
+										<button type="button" class="delete-item btn btn-sm btn-danger">Delete</button>
+									</div> 
 								</div> 
+							</div> 
 							
-								<div class="col-auto mb-3">
-									<button type="button" class="delete-item">Delete</button>
-								</div> 
 							<div style="color: red;" class="col-auto mb-3">{{ form_set.empty_form.errors }}</div>
 									
 								

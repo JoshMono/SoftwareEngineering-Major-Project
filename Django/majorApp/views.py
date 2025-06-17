@@ -9,46 +9,51 @@ from .logic import file_management
 from weasyprint import HTML, CSS
 
 from .forms import CreateCompanyForm, CreateFirmForm, CreateLeadForm, CustomUserSignupForm, CreateQuoteItemFormSet, CreateQuoteItemForm, CreateInvoiceItemFormSet
-from allauth.account.views import SignupView
+from allauth.account.views import SignupView, LoginView
+from allauth.account.forms import LoginForm
 
+
+
+def landing_page(request):
+    return render(request, "accounts/landing_page.html")
 
 
 class CustomSignupView(SignupView):
     form_class = CustomUserSignupForm
     template_name = "accounts/signup.html"
 
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+    template_name = "accounts/login.html"
+
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+    template_name = "accounts/login.html"
 
 @login_required
 def dashboard(request):
-    if request.method == 'POST':
-        form = CreateCompanyForm(request.POST)
-        if form.is_valid():
-            company = form.save(commit=False)
-            company.firm = request.user.firm
-            company.save()
-            return redirect('/dashboard')
-    else:
-        if request.user.firm == None:
-            return redirect("/create_firm")
-        
-        firm_id = request.user.firm.id
-        context = {}
+   
+    if request.user.firm == None:
+        return redirect("/create_firm")
+    
+    firm_id = request.user.firm.id
+    context = {}
 
-        firm = Firm.objects.get(id=firm_id)
-        companies = Company.objects.filter(firm=firm)
-        leads = Lead.objects.filter(Q(company__firm__id=firm_id) & (Q(status="IC") | Q(status="QS")))
-        quotes = Quote.objects.filter(Q(company__firm__id=firm_id) & (Q(status="D") | Q(status="S")))
-        invoices = Invoice.objects.filter(Q(company__firm__id=firm_id) & (Q(status="D") | Q(status="S")))
+    firm = Firm.objects.get(id=firm_id)
+    companies = Company.objects.filter(firm=firm)
+    leads = Lead.objects.filter(Q(company__firm__id=firm_id) & (Q(status="IC") | Q(status="QS")))
+    quotes = Quote.objects.filter(Q(company__firm__id=firm_id) & (Q(status="D") | Q(status="S")))
+    invoices = Invoice.objects.filter(Q(company__firm__id=firm_id) & (Q(status="D") | Q(status="S")))
 
-        context['firm'] = firm
-        context['companies'] = companies
-        context['leads'] = leads
-        context['quotes'] = quotes
-        context['invoices'] = invoices
+    context['firm'] = firm
+    context['companies'] = companies
+    context['leads'] = leads
+    context['quotes'] = quotes
+    context['invoices'] = invoices
 
-        context['form'] = CreateCompanyForm()
+    context['form'] = CreateCompanyForm()
 
-        return render(request, "majorApp/firm/dashboard.html", context)
+    return render(request, "majorApp/firm/dashboard.html", context)
     
 
     
@@ -69,6 +74,22 @@ def create_firm(request):
         return render(request, "majorApp/firm/create_firm.html", context)
     
 
+@login_required
+def edit_firm(request):
+    context = {}
+    firm = request.user.firm
+    if request.method == "POST":
+        form = CreateFirmForm(request.POST, instance=firm)
+        if form.is_valid():
+            firm_instance = form.save()
+            request.user.firm = firm_instance
+            request.user.save()
+            return redirect(f'/dashboard')
+        context["form"] = form
+        return render(request, "majorApp/firm/create_firm.html", context)
+    else:
+        context["form"] = CreateFirmForm(instance=firm)
+        return render(request, "majorApp/firm/create_firm.html", context)
 
 
 
@@ -124,7 +145,9 @@ def company_create(request):
             firm = request.user.firm
             form.instance.firm = firm 
             form.save()
-            return redirect('/dashboard')
+            
+            return redirect(f'/company/{form.instance.id}')  
+            
     else:     
         
         form = CreateCompanyForm(firm_id=request.user.firm.id)
@@ -133,38 +156,34 @@ def company_create(request):
 
 
 @login_required
-def company_edit(request, contact_id):
-    contact = Contact.objects.get(id=contact_id)
-    firm = contact.get_firm()
-    user_firm = request.user.firm
-    
-    if firm.id != user_firm.id:
-        return HttpResponseForbidden("Permission Denied")
+def company_edit(request, company_id):
+    company = Company.objects.get(id=company_id)
     if request.method == "POST":
-        form = CreateContactForm(request.POST, instance=contact, firm_id=user_firm.id)
+        form = CreateCompanyForm(request.POST, instance=company, firm_id=request.user.firm.id)
         if form.is_valid():
-            form.firm = user_firm 
-            instance = form.save()
-            instance.companies.set(form.cleaned_data.get("companies"))
-            return redirect('/dashboard')
+            
+            firm = request.user.firm
+            form.instance.firm = firm 
+            form.save()
+            return redirect(f'/company/{form.instance.id}')  
     else:     
-        form = CreateContactForm(instance=contact, firm_id=user_firm.id)
-        
-    return render(request, "majorApp/contact/contact_create.html", {"form": form, "create_edit": "Edit"})
+        form = CreateCompanyForm(firm_id=request.user.firm.id, instance=company)
+
+    return render(request, "majorApp/company/company_create.html", {"form": form, "create_edit": "Edit"})
 
 @login_required
-def company_delete(request, invoice_id):
-    contact = Contact.objects.get(id=invoice_id)
-    firm = contact.get_firm()
+def company_delete(request, company_id):
+    company = Company.objects.get(id=company_id)
+    firm = company.get_firm()
     user_firm_id = request.user.firm.id
     if firm.id != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
     
     if request.method == "POST":
-        contact.delete()
+        company.delete()
         return redirect('/dashboard')
          
-    return render(request, "majorApp/general/comfirm_delete.html", {"object": contact})
+    return render(request, "majorApp/general/comfirm_delete.html", {"object": company})
 
 
 
@@ -213,8 +232,10 @@ def contact_create(request):
             instance = form.save()
 
             if company_id:
-                instance.companies.add(Company.objects.get(id=company_id))  
+                instance.companies.set([Company.objects.get(id=company_id)])  
                 return redirect("company_detail", company_id=company_id)
+            else:
+                instance.companies.set(form.cleaned_data.get("companies"))
 
             return redirect("contacts")
 
@@ -325,7 +346,7 @@ def lead_edit(request, lead_id):
             form.save()
             return redirect('/dashboard')
     else:     
-        form = CreateLeadForm(instance=lead, firm_id=user_firm_id)
+        form = CreateLeadForm(instance=lead, firm_id=user_firm_id, edit=True)
         
     return render(request, "majorApp/lead/lead_create.html", {"form": form, "create_edit": "Edit"})
 
@@ -421,13 +442,14 @@ def quote_create(request):
         if form.is_valid() and form_set.is_valid():
             quote_instance = form.save(commit=False)
             quote_items = form_set.save(commit=False)
-            for quote_item in quote_items:
-                quote_item.quote = quote_instance
-                quote_item.save()
             request.user.firm.quote_index += 1
             request.user.firm.save()
             quote_instance.quote_index = request.user.firm.quote_index
             quote_instance.save()
+            for quote_item in quote_items:
+                quote_item.quote = quote_instance
+                quote_item.save()
+            
 
 
             if request.GET.get("company_id"):
@@ -444,7 +466,7 @@ def quote_create(request):
             form = CreateQuoteForm(firm_id=firm_id)
         form_set = CreateQuoteItemFormSet(queryset=QuoteItem.objects.none())
         
-        context["form_set"] = form_set
+    context["form_set"] = form_set
     context["form"] = form
     context["create_edit"] = "Create"
 
@@ -582,13 +604,13 @@ def invoice_create(request):
         if form.is_valid() and form_set.is_valid():
             invoice_instance = form.save(commit=False)
             invoice_items = form_set.save(commit=False)
-            for invoice_item in invoice_items:
-                invoice_item.invoice = invoice_instance
-                invoice_item.save()
             request.user.firm.invoice_index += 1
             request.user.firm.save()
             invoice_instance.invoice_index = request.user.firm.invoice_index
             invoice_instance.save()
+            for invoice_item in invoice_items:
+                invoice_item.invoice = invoice_instance
+                invoice_item.save()
 
 
             if request.GET.get("company_id"):

@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block title %}Create Lead{% endblock %}
+{% block title %}{{create_edit}} Lead{% endblock %}
 
 {% block content %}
 <div class="HeaderDiv">
@@ -13,20 +13,24 @@
 	<form method="post" class="p-4 border rounded shadow Create-Form">
 		{% csrf_token %}
 
-		{% for field in form %}
+		{% for field in form.visible_fields  %}
 
-				<div class=" row">
-					<div class="col-auto mb-3 form-control">
-						{{ field.label_tag }}
-						{{ field }}
-					</div> 
-					<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
-				</div>
-
+			<div class=" row">
+				<div class="col-auto mb-3 form-control">
+					{{ field.label_tag }}
+					{{ field }}
+					<small class="form-text text-muted">{{ field.help_text }}</small>
+				</div> 
+				<div style="color: red;" class="col-auto mb-3">{{ field.errors }}</div>
+			</div>
+			
 		{% endfor %}
 		<div style="text-align: center;">
 			<button class="btn btn-primary" type="submit">Save</button>
 		</div>
+		{% for field in form.hidden_fields %}
+			{{ field }}
+		{% endfor %}
 	</form>
 </div>
 {% endblock %}

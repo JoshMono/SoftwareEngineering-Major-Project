@@ -136,11 +136,23 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_UNKNOWN_ACCOUNTS = False
 MAX_EMAIL_ADDRESSES = 1
 
-LOGIN_REDIRECT_URL = 'dashboard'  # todo
-ACCOUNT_SIGNUP_REDIRECT_URL = 'dashboard'  # todo
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'monocrmemail@gmail.com'       # Your Gmail address
+EMAIL_HOST_PASSWORD = 'dhgq fifj mjlz ftcy'      # Your Gmail App Password (see below)
+DEFAULT_FROM_EMAIL = 'CRM monocrmemail@gmail.com'
+
+ACCOUNT_LOGOUT_ON_GET = True
+
+LOGIN_URL = 'landing_page' 
+LOGIN_REDIRECT_URL = 'dashboard' 
+ACCOUNT_SIGNUP_REDIRECT_URL = 'dashboard'  
 
 
-ACCOUNT_LOGIN_METHODS = {"username", "email"}
+ACCOUNT_LOGIN_METHODS = {"email"}
 
 
 

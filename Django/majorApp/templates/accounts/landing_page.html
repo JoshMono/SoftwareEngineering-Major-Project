@@ -1,0 +1,39 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Landing Page{% endblock %}
+{% block content %}
+
+<header class="bg-primary text-white text-center py-5">
+    <div class="container">
+      <h1 class="display-4">Client Relationship Manager</h1>
+      <p class="lead">Manage your customers, deals, and sales effortlessly.</p>
+      {% if not user.is_authenticated %}
+        <a href="{% url 'account_login' %}" class="btn btn-light btn-lg mt-3">Login</a>
+        <a href="{% url 'account_signup' %}" class="btn btn-outline-light btn-lg mt-3 ms-2">Sign Up</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <section class="py-5">
+    <div class="container text-center">
+      <h1 style="border-bottom: 1px solid black; padding-bottom: 8px;">Features</h2>
+      <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+          <h4>Contact Management</h4>
+          <p>Easily track and manage all your customer information in one place.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h4>Sales Pipeline</h4>
+          <p>Visualize your deals and stages to close more sales efficiently.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h4>Reporting</h4>
+          <p>Get insights and analytics to make data-driven business decisions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% endblock %}
