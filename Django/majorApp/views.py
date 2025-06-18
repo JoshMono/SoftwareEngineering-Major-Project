@@ -571,7 +571,7 @@ def quote_delete(request, quote_id):
     quote = Quote.objects.get(id=quote_id)
     firm = quote.get_firm()
     user_firm_id = request.user.firm
-    if firm.id != user_firm_id:
+    if firm != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
     
     if request.method == "POST":
