@@ -76,6 +76,7 @@ def create_firm(request):
 
 @login_required
 def edit_firm(request):
+
     context = {}
     firm = request.user.firm
     if request.method == "POST":
@@ -103,7 +104,9 @@ def edit_firm(request):
 
 @login_required
 def companies(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
+    
     firm_id = request.user.firm.id
     context = {}
 
@@ -115,7 +118,8 @@ def companies(request):
 
 @login_required
 def company_detail(request, company_id):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     company = Company.objects.get(id=company_id)
     firm = company.get_firm()
     
@@ -137,7 +141,8 @@ def company_detail(request, company_id):
 
 @login_required
 def company_create(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     if request.method == "POST":
         form = CreateCompanyForm(request.POST, firm_id=request.user.firm.id)
         if form.is_valid():
@@ -157,7 +162,12 @@ def company_create(request):
 
 @login_required
 def company_edit(request, company_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
+    
     company = Company.objects.get(id=company_id)
+    if request.user.firm != company.firm:
+        return HttpResponseForbidden("Permission Denied")
     if request.method == "POST":
         form = CreateCompanyForm(request.POST, instance=company, firm_id=request.user.firm.id)
         if form.is_valid():
@@ -173,7 +183,13 @@ def company_edit(request, company_id):
 
 @login_required
 def company_delete(request, company_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     company = Company.objects.get(id=company_id)
+    user_firm = company.firm
+    if company.firm != request.user.firm:
+        return HttpResponseForbidden("Permission Denied")
+    
     firm = company.get_firm()
     user_firm_id = request.user.firm.id
     if firm.id != user_firm_id:
@@ -197,7 +213,8 @@ def company_delete(request, company_id):
 
 @login_required
 def contacts(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     firm_id = request.user.firm.id
     context = {}
 
@@ -209,19 +226,23 @@ def contacts(request):
 
 
 def contact_detail(request, contact_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     contact = Contact.objects.get(id=contact_id)
-    firm = contact.get_firm()
-    user_firm_id = request.user.firm.id
-    context = {}
-    if firm.id != user_firm_id:
-        return HttpResponseForbidden("Permission Denied")
+    user_firm = contact.firm
 
+    if request.user.firm != user_firm:
+        return HttpResponseForbidden("Permission Denied")
+    
+    context = {}
     context['contact'] = contact
     
     return render(request, "majorApp/contact/contact_detail.html", context)   
 
 @login_required
 def contact_create(request):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     company_id = request.GET.get("company_id")
     if request.method == "POST":
         form = CreateContactForm(request.POST, firm_id=request.user.firm.id)
@@ -246,7 +267,10 @@ def contact_create(request):
 
 @login_required
 def contact_edit(request, contact_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     contact = Contact.objects.get(id=contact_id)
+    
     firm = contact.get_firm()
     user_firm = request.user.firm
     
@@ -266,6 +290,8 @@ def contact_edit(request, contact_id):
 
 @login_required
 def contact_delete(request, contact_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     contact = Contact.objects.get(id=contact_id)
     firm = contact.get_firm()
     user_firm_id = request.user.firm.id
@@ -290,6 +316,8 @@ def contact_delete(request, contact_id):
 
 @login_required
 def leads(request):
+    if request.user.firm == None:
+        return redirect("/create_firm")
 
     firm_id = request.user.firm.id
     context = {}
@@ -302,6 +330,8 @@ def leads(request):
 
 @login_required
 def lead_detail(request, lead_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     lead = Lead.objects.get(id=lead_id)
     firm = lead.get_firm()
     user_firm_id = request.user.firm.id
@@ -316,7 +346,8 @@ def lead_detail(request, lead_id):
 
 @login_required
 def lead_create(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     firm_id = request.user.firm.id
     if request.method == "POST":
         form = CreateLeadForm(request.POST, firm_id=firm_id)
@@ -334,6 +365,8 @@ def lead_create(request):
 
 @login_required
 def lead_edit(request, lead_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     lead = Lead.objects.get(id=lead_id)
     firm = lead.get_firm()
     user_firm_id = request.user.firm.id
@@ -352,6 +385,8 @@ def lead_edit(request, lead_id):
 
 @login_required
 def lead_delete(request, lead_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     lead = Lead.objects.get(id=lead_id)
     firm = lead.get_firm()
     user_firm_id = request.user.firm.id
@@ -376,16 +411,28 @@ def lead_delete(request, lead_id):
 ###
 @login_required
 def get_quotes(request):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     company_id = request.GET.get('company_id')
-    print(company_id)
+
+    if request.user.firm != Company.objects.get(id=company_id).firm:
+        return HttpResponseForbidden("Permission Denied")
+    
     leads = Lead.objects.filter(company_id=company_id)
     data = [{'id': lead.id, 'name': lead.__str__()} for lead in leads]
     return JsonResponse({"leads": data}, safe=False)
 
 @login_required
 def quote_pdf(request, quote_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
+    
     quote = Quote.objects.get(id=quote_id)
     firm = request.user.firm
+
+    if quote.get_firm() != firm:
+        return HttpResponseForbidden("Permission Denied")
+    
     html_string  = render_to_string('majorApp/quote/pdf_template.html', {
         'quote': quote,
         'firm': firm,
@@ -404,7 +451,8 @@ def quote_pdf(request, quote_id):
 
 @login_required
 def quotes(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     firm_id = request.user.firm.id
     context = {}
 
@@ -415,6 +463,8 @@ def quotes(request):
     return render(request, "majorApp/quote/quotes.html", context)
 
 def quote_detail(request, quote_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     quote = Quote.objects.get(id=quote_id)
     firm = quote.get_firm()
     user_firm_id = request.user.firm.id
@@ -430,7 +480,8 @@ def quote_detail(request, quote_id):
 
 @login_required
 def quote_create(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
@@ -475,6 +526,8 @@ def quote_create(request):
 
 @login_required
 def quote_edit(request, quote_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     quote = Quote.objects.get(id=quote_id)
     firm = quote.get_firm()
     user_firm_id = request.user.firm.id
@@ -513,9 +566,11 @@ def quote_edit(request, quote_id):
 
 @login_required
 def quote_delete(request, quote_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     quote = Quote.objects.get(id=quote_id)
     firm = quote.get_firm()
-    user_firm_id = request.user.firm.id
+    user_firm_id = request.user.firm
     if firm.id != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
     
@@ -537,16 +592,23 @@ def quote_delete(request, quote_id):
 
 @login_required
 def get_invoices(request):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     company_id = request.GET.get('company_id')
-    print(company_id)
+    if request.user.firm != Company.objects.get(id=company_id).firm:
+        return HttpResponseForbidden("Permission Denied")
     quotes = Quote.objects.filter(company_id=company_id)
     data = [{'id': quote.id, 'name': quote.__str__()} for quote in quotes]
     return JsonResponse({"quotes": data}, safe=False)
 
 @login_required
 def invoice_pdf(request, invoice_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     invoice = Invoice.objects.get(id=invoice_id)
     firm = request.user.firm
+    if request.user.firm != invoice.get_firm():
+        return HttpResponseForbidden("Permission Denied")
     html_string  = render_to_string('majorApp/invoice/pdf_template.html', {
         'invoice': invoice,
         'firm': firm,
@@ -565,6 +627,8 @@ def invoice_pdf(request, invoice_id):
 
 @login_required
 def invoices(request):
+    if request.user.firm == None:
+        return redirect("/create_firm")
 
     firm_id = request.user.firm.id
     context = {}
@@ -577,6 +641,8 @@ def invoices(request):
 
 
 def invoice_detail(request, invoice_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     invoice = Invoice.objects.get(id=invoice_id)
     firm = invoice.get_firm()
     user_firm_id = request.user.firm.id
@@ -592,7 +658,8 @@ def invoice_detail(request, invoice_id):
 
 @login_required
 def invoice_create(request):
-
+    if request.user.firm == None:
+        return redirect("/create_firm")
     context = {}
     firm_id = request.user.firm.id
     if request.method == "POST":
@@ -636,6 +703,8 @@ def invoice_create(request):
 
 @login_required
 def invoice_edit(request, invoice_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     invoice = Invoice.objects.get(id=invoice_id)
     firm = invoice.get_firm()
     user_firm_id = request.user.firm.id
@@ -673,10 +742,12 @@ def invoice_edit(request, invoice_id):
 
 @login_required
 def invoice_delete(request, invoice_id):
+    if request.user.firm == None:
+        return redirect("/create_firm")
     invoice = Invoice.objects.get(id=invoice_id)
     firm = invoice.get_firm()
-    user_firm_id = request.user.firm.id
-    if firm.id != user_firm_id:
+    user_firm_id = request.user.firm
+    if firm != user_firm_id:
         return HttpResponseForbidden("Permission Denied")
     
     if request.method == "POST":

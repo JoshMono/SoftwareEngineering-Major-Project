@@ -8,19 +8,28 @@ import datetime
 from .utils import concatonate_list_of_strings_with_ampersand
 
 
+from django.core.exceptions import ValidationError
+import re
+
+def validate_letters_only(value):
+    if not re.match(r'^[a-zA-Z\s]+$', value):
+        raise ValidationError('This field accepts letters only.')
+
+
 class CustomUser(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
     dob = models.DateField(null=True, blank=True)
-    phone_number = PhoneNumberField(region="AU", null=True, blank=True,)
-    mfa_secret_key = models.CharField(null=True, blank=True, max_length=16) 
+    phone_number = PhoneNumberField(region="AU", null=True, blank=True,) 
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE, null=True, blank=True)
+    first_name = models.CharField(max_length=25, validators=[validate_letters_only])
+    last_name = models.CharField(max_length=25, validators=[validate_letters_only])
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 class Firm(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
-    name = models.TextField()
+    name = models.TextField(max_length=30, validators=[validate_letters_only])
     email = models.EmailField(null=True, blank=True)
     phone_number = PhoneNumberField(region="AU", null=True, blank=True)
     quote_index = models.SmallIntegerField(default=0)
@@ -31,7 +40,7 @@ class Firm(models.Model):
     
 class Company(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
-    name = models.TextField()
+    name = models.TextField(max_length=30, validators=[validate_letters_only])
     address = models.TextField(null=True, blank=True)
     industry = models.TextField(null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)
@@ -61,9 +70,9 @@ class Company(models.Model):
 
 class Contact(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True)
-    first_name = models.TextField(blank=True, max_length=20)
-    last_name = models.TextField(blank=True, max_length=20)
-    email = models.EmailField(null=True, blank=True)
+    first_name = models.TextField(blank=True, max_length=20, validators=[validate_letters_only])
+    last_name = models.TextField(blank=True, max_length=20, validators=[validate_letters_only])
+    email = models.EmailField(null=True, blank=True, max_length=50)
     phone_number = PhoneNumberField(region="AU", null=True, blank=True)
     firm = models.ForeignKey("majorApp.Firm", on_delete=models.CASCADE)
 

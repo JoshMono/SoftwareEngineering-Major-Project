@@ -4,6 +4,9 @@ from allauth.account.forms import SignupForm, LoginForm
 from django.utils.timezone import now
 
 
+
+
+
 class CustomUserSignupForm(SignupForm):
     first_name = CharField(max_length=30, required=True)
     last_name = CharField(max_length=30, required=True)

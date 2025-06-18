@@ -143,6 +143,14 @@
 
 }
 
+body {
+    overflow-wrap: break-word;
+}
+
+.table td {
+    overflow-wrap: break-word;
+}
+
 .HeaderDiv {
     display: flex;
     justify-content: space-between;
