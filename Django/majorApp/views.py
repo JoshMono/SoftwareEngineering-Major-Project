@@ -501,8 +501,6 @@ def quote_create(request):
                 quote_item.quote = quote_instance
                 quote_item.save()
             
-
-
             if request.GET.get("company_id"):
                 return redirect(f'/company/{request.GET.get("company_id")}')  
             return redirect('/dashboard')
@@ -613,8 +611,6 @@ def invoice_pdf(request, invoice_id):
         'invoice': invoice,
         'firm': firm,
     })
-
-   
 
     html = HTML(string=html_string)
     result = html.write_pdf()
